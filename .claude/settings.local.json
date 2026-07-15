@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:augzet.com)",
+      "WebFetch(domain:www.quantaservices.com)",
+      "Bash(curl -sSL -m 20 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/126.0 Safari/537.36\" https://augzet.com/ -o /tmp/augzet.html -w \"%{http_code} %{url_effective}\\\\n\")",
+      "Read(//tmp/**)",
+      "Bash(curl -sSL -m 25 -A \"Mozilla/5.0\" http://augzet.com/ -o /tmp/augzet.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(nslookup augzet.com)",
+      "WebFetch(domain:archive.org)",
+      "WebSearch",
+      "WebFetch(domain:web.archive.org)",
+      "Bash(curl -sSL -m 60 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\)\" \"http://web.archive.org/web/20260412191936/https://augzet.com/\" -o \"C:/Users/risha/AppData/Local/Temp/claude/G--Augzet-V2/2af51944-1ec3-49e0-9f12-61e96d873bcf/scratchpad/augzet.html\" -w \"HTTP %{http_code}, %{size_download} bytes\\\\n\")",
+      "Bash(python -)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}
