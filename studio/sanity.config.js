@@ -6,6 +6,7 @@ import { schemaTypes } from './schemaTypes';
 export default defineConfig({
   name: 'default',
   title: 'Augzet Portal',
+  basePath: '/admin',
 
   projectId: 'uhhnpy9s',
   dataset: 'production',
