@@ -28,4 +28,10 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
   },
+
+  // Ensure Vite bundles scripts and assets with /admin/ prefix
+  vite: (config) => ({
+    ...config,
+    base: '/admin/',
+  }),
 });
