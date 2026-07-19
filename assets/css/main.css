@@ -15,16 +15,16 @@
   --gray-200:     #DEDEDE;
   --gray-500:     #8D8D8D;  /* secondary text on dark */
   --gray-600:     #454545;  /* body text on light */
-  --red:          #CD0A1B;  /* red-300 — chips on light, arrow boxes, headlines on light */
-  --red-2:        #BC2A27;  /* red-500 — hover */
-  --gold:         #F0941D;  /* gold-300 — chips on dark, accent lines, headline splits */
-  --gold-2:       #D87C0A;  /* gold-500 — hover */
+  --red:          #CD0A1B;  /* Primary Red */
+  --red-2:        #B3000E;  /* Darker Red (hover) */
+  --gold:         #CD0A1B;  /* Mapped to Red (Black, White & Red only) */
+  --gold-2:       #B3000E;  /* Mapped to Darker Red */
   --white:        #FFFFFF;
   --black:        #000000;
 
-  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;   /* alternate-gothic-extra-cond stand-in */
-  --font-label:   "Oswald", "Arial Narrow", sans-serif;       /* condensed tracked labels / nav / links */
-  --font-body:    "Montserrat", "Segoe UI", sans-serif;       /* proxima-nova stand-in */
+  --font-display: "Oxygen", sans-serif;   /* Oxygen font from augzet.com */
+  --font-label:   "Oxygen", sans-serif;   /* Oxygen font from augzet.com */
+  --font-body:    "Lato", sans-serif;     /* Lato font from augzet.com */
 
   --track-display: 0.1em;   /* Quanta: letter-spacing = calc(size * .1) */
   --ease-heavy: cubic-bezier(0.22, 1, 0.36, 1);
@@ -270,6 +270,11 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   color: var(--white);
   line-height: 1;
   text-transform: uppercase;
+}
+.brand img {
+  height: 38px;
+  width: auto;
+  display: block;
 }
 .brand .brand-mark {
   width: 26px; height: 26px;
@@ -1073,4 +1078,67 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---------- Founders Section ---------- */
+.founders-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+  margin-top: 3.5rem;
+}
+@media (max-width: 768px) {
+  .founders-grid {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+}
+.founder-card {
+  text-align: center;
+  position: relative;
+}
+.founder-card .image-container {
+  position: relative;
+  background: #E5E5E5;
+  aspect-ratio: 4 / 5.2;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 1.8rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.founder-card .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Offset red border accent on the top-right corner of the image card */
+.founder-card .image-container::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 130px;
+  height: 130px;
+  border-top: 8px solid var(--red);
+  border-right: 8px solid var(--red);
+  pointer-events: none;
+  z-index: 1;
+}
+.founder-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.95rem;
+  color: var(--red) !important;
+  margin-bottom: 0.6rem;
+  text-transform: none; /* Keep natural casing as requested/shown */
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+.founder-card p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--gray-600);
+  max-width: 32ch;
+  margin: 0 auto;
 }
