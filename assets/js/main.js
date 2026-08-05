@@ -10,6 +10,14 @@
 
   if (hasGsap && typeof window.ScrollTrigger !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
+    /* Trigger positions are measured at script time, before images and
+       fonts settle — photos further down the page then shift every
+       trigger's real position (~600px measured), so reveals/counters can
+       fire at the wrong scroll offset or never. Re-measure once the page
+       is fully loaded. */
+    window.addEventListener("load", function () {
+      ScrollTrigger.refresh();
+    });
   }
 
   /* ---------- Header scroll state ---------- */

@@ -17,9 +17,9 @@ export default {
       description: 'Select the capability this project falls under.',
       options: {
         list: [
-          { title: 'Solar EPC', value: 'solar' },
           { title: 'Electrical Design', value: 'design' },
           { title: 'Automation', value: 'automation' },
+          { title: 'Solar EPC', value: 'solar' },
           { title: 'Maintenance (AMC)', value: 'amc' }
         ],
         layout: 'radio'

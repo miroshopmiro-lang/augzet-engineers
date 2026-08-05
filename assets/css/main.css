@@ -33,6 +33,19 @@
   --header-h: 96px;
   --header-h-scrolled: 64px;
 
+  /* ---- Prose measure ----
+     One shared reading width for every body paragraph on the site. Before
+     this token existed, .lede was capped at 52ch while the plain <p>
+     directly beneath it had no cap at all and ran the full container:
+     473px stacked on 1163px at a 1280px viewport. Two paragraphs in the
+     same block with wildly different right edges is what reads as "all
+     over the place", and the uncapped ones measured 114-156ch (a
+     comfortable measure is 45-75ch).
+     max-width only ever constrains, never expands, so applying this to
+     blocks that are already narrower (.story-quote at 37ch,
+     .founder-card p at 32ch) is a no-op. */
+  --measure: 68ch;
+
   /* topographic contour texture (Quanta dark-panel motif) */
   --topo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.045' stroke-width='1'%3E%3Cpath d='M60,90 C110,40 190,50 220,95 C250,140 210,180 160,185 C110,190 10,140 60,90 Z'/%3E%3Cpath d='M45,95 C100,25 205,35 240,95 C275,155 220,200 155,205 C90,210 -10,165 45,95 Z'/%3E%3Cpath d='M300,290 C340,250 400,260 415,300 C430,340 390,370 350,372 C310,374 260,330 300,290 Z'/%3E%3Cpath d='M285,295 C330,240 415,250 432,300 C449,350 400,388 348,390 C296,392 240,350 285,295 Z'/%3E%3Cpath d='M120,320 C150,290 200,300 210,330 C220,360 190,380 160,380 C130,380 90,350 120,320 Z'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M330,80 h2 v12 h-2 Z M325,85 h12 v2 h-12 Z'/%3E%3Cpath d='M80,250 h2 v12 h-2 Z M75,255 h12 v2 h-12 Z'/%3E%3Cpath d='M370,180 h2 v12 h-2 Z M365,185 h12 v2 h-12 Z'/%3E%3C/g%3E%3C/svg%3E");
 }
@@ -64,9 +77,27 @@ h1, .h1, h2, .h2, h3, .h3 {
   letter-spacing: var(--track-display);
   color: inherit;
 }
-h1, .h1 { font-size: clamp(3.4rem, 8.2vw, 8.25rem); }
-h2, .h2 { font-size: clamp(2.6rem, 5.2vw, 5rem); }
-h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
+/* ---- Display scale ----
+   Every size below is clamp(floor, Nvw, ceiling). Two rules govern the
+   numbers, and both were broken before:
+
+   1. The vw coefficients were tuned so high (h1 8.2vw, h2 5.2vw) that the
+      ceilings were never reached on a real laptop — an h2 measured 66.6px
+      at 1280 and 80px at 1920. Uppercase at 0.1em tracking that size is
+      roughly double a normal B2B editorial scale, which is the whole of
+      the client's "fonts are extremely large / looks zoomed in" report.
+      The coefficients now land each step at its ceiling near 1550-1600px,
+      just past the 1440px .container cap, so type stops growing at
+      approximately the same point the measure does.
+
+   2. h1 must outrank h2 at EVERY viewport. It did not: .cta-band h2 ran
+      7vw against .page-hero h1 at 6.4vw, so the boilerplate "Get your
+      free quote" was the largest text on all 9 pages (89.6px vs 81.9px at
+      1280, 112px vs 99.2px at 1920). Any change to these clamps must
+      preserve h1 > h2 across the full 375-1920 range. */
+h1, .h1 { font-size: clamp(2.4rem, 4.6vw, 4.6rem); }
+h2, .h2 { font-size: clamp(2rem, 3.3vw, 3.25rem); }
+h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
 
 /* two-tone stacked headlines: white → gold on dark, all-red on light */
 .t-gold { color: var(--gold); }
@@ -77,9 +108,32 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   font-size: clamp(0.98rem, 1.2vw, 1.1rem);
   line-height: 1.85;
   color: var(--gray-600);
-  max-width: 52ch;
+  /* Was 52ch, which left 756px (59% of the container) dead to its right
+     at 1280 while the paragraph underneath ran edge to edge. Sharing the
+     body measure lines the two right edges up so the remaining whitespace
+     reads as an editorial margin instead of a broken column. */
+  max-width: var(--measure);
 }
 .lede--dark, .section--dark .lede { color: #C9C4C2; }
+
+/* ---- Shared prose measure ----
+   Applied in one place rather than per page. These are the body-copy
+   contexts that previously had no max-width and ran the full container:
+   .process-step p measured 114ch on about.html and all four service
+   pages, .form-note 156ch on projects.html, and bare <p> in .container
+   125ch on index.html. Anything already narrower is unaffected. */
+.section > .container > p,
+.section-head p,
+.case-text p,
+.detail-body p,
+.detail-body li,
+.process-step p,
+.beat p,
+.why-cell p,
+.faq-item p,
+.form-note,
+.cap-desc,
+.cap2-desc { max-width: var(--measure); }
 
 /* ---------- Chip eyebrow (Quanta: filled label) ---------- */
 .chip {
@@ -415,6 +469,10 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   padding-inline: var(--container-pad);
 }
 .hero-content h1 {
+  /* The homepage hero is the one place on the site that earns the largest
+     type: full-bleed video behind it, two short hard-broken lines, no
+     competing content. It sits one step above .page-hero h1 by design. */
+  font-size: clamp(2.6rem, 4.9vw, 4.9rem);
   margin-inline: auto;
   max-width: 18ch;
   text-shadow: 0 2px 28px rgba(0,0,0,0.5);
@@ -502,8 +560,27 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   gap: clamp(2.5rem, 6vw, 6rem);
   align-items: start;
 }
-.cap2-left { padding-top: 1rem; }
-.cap2-left h2 { margin-bottom: 2.2rem; }
+.cap2-left {
+  padding-top: 1rem;
+  /* Pin the left column while the capability list scrolls past, matching
+     the flagship section's sticky-media treatment below it. Disabled at
+     the same breakpoint the grid collapses to a single column. */
+  position: sticky;
+  top: calc(var(--header-h-scrolled) + 24px);
+  align-self: start;
+}
+.cap2-left h2 {
+  margin-bottom: 2.2rem;
+  /* The base h2 clamp(2.6rem,5.2vw,5rem) tracks raw viewport width, but
+     .container caps out at 1440px, so past ~1538px the font keeps growing
+     on a fixed-width column, overflow-wrap:normal can't break a single
+     word like "EVERYTHING", and it spills into .cap2-right uncontained
+     (invisible to any check that only reads box edges instead of glyph
+     extents). Retuned to reach its ceiling in step with the container's
+     own 1440px cap. overflow-wrap is a backstop for any future copy
+     change that introduces an even longer unbroken word. */
+  font-size: clamp(2rem, 3.45vw, 3.4rem);
+}
 .cap2-note {
   margin-top: 4.5rem;
   margin-bottom: 1.4rem;
@@ -523,17 +600,23 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   flex-direction: column;
 }
 .cap2-item {
+  /* Vertical stack: idx eyebrow, then heading, then desc. The label can
+     legitimately wrap to 2-3 lines at this font size (clamp up to 3.4rem
+     in a ~520px column) — putting idx beside it (flex row or grid column)
+     leaves the small idx cross-aligned against a much taller sibling with
+     no good answer, top-aligned floats it away from the heading, centered
+     buries it mid-word. Stacking it above sidesteps the problem, and
+     matches the working cap-index-above-h3 pattern used on services.html. */
   font-family: var(--font-display);
-  font-size: clamp(2rem, 3.6vw, 3.4rem);
+  font-size: clamp(1.6rem, 2.65vw, 2.6rem);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--white);
   padding-block: clamp(1.6rem, 3.2vw, 3rem);
   border-bottom: 1px solid rgba(255,255,255,0.09);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
+  flex-direction: column;
+  align-items: flex-start;
   transition: color 0.3s, transform 0.4s var(--ease-heavy);
 }
 .cap2-item:last-child { border-bottom: none; }
@@ -543,7 +626,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   font-weight: 600;
   letter-spacing: 0.3em;
   color: var(--gold);
-  flex: none;
+  margin-bottom: 10px;
 }
 .cap2-item:hover { color: var(--gold); transform: translateX(10px); }
 
@@ -563,8 +646,20 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   border-bottom: 3px solid var(--gold);
 }
 .cap-panel .cap-bg { position: absolute; inset: 0; opacity: 0.5; transition: transform 0.7s var(--ease-heavy), opacity 0.5s; }
-.cap-panel .cap-bg svg { width: 100%; height: 100%; }
+.cap-panel .cap-bg svg,
+.cap-panel .cap-bg img { width: 100%; height: 100%; object-fit: cover; }
 .cap-panel:hover .cap-bg { transform: scale(1.05); opacity: 0.75; }
+/* Photo variant: 50% opacity was tuned for dark SVG line-art — real
+   photographs at 0.5 over the near-black panel read as murky/covered.
+   Run photos at full strength and keep the text legible with a scrim. */
+.cap-panel .cap-bg:has(img) { opacity: 1; }
+.cap-panel:hover .cap-bg:has(img) { opacity: 1; }
+.cap-panel .cap-bg:has(img)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.15));
+}
 .cap-inner {
   position: absolute;
   inset: 0;
@@ -583,7 +678,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   color: var(--gold);
   text-transform: uppercase;
 }
-.cap-bottom h3 { margin-bottom: 10px; max-width: 14ch; color: var(--white) !important; font-size: clamp(1.8rem, 2.8vw, 2.6rem); }
+.cap-bottom h3 { margin-bottom: 10px; max-width: 14ch; color: var(--white) !important; font-size: clamp(1.45rem, 2.1vw, 2.1rem); }
 .cap-bottom .cap-desc {
   font-size: 14px;
   line-height: 1.7;
@@ -627,7 +722,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
 .stat-cell { background: var(--charcoal); padding: clamp(2.2rem, 4vw, 3.6rem) clamp(1.2rem, 2.5vw, 2.5rem); }
 .stat-num {
   font-family: var(--font-display);
-  font-size: clamp(3.4rem, 6vw, 6rem);
+  font-size: clamp(2.8rem, 4.4vw, 4.6rem);
   letter-spacing: 0.04em;
   color: var(--gold);
   line-height: 1;
@@ -691,7 +786,8 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
 }
 .flagship-media .beat-img { position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s var(--ease-heavy); }
 .flagship-media .beat-img.is-active { opacity: 1; }
-.flagship-media .beat-img svg { width: 100%; height: 100%; }
+.flagship-media .beat-img svg,
+.flagship-media .beat-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .flagship-beats { display: flex; flex-direction: column; gap: clamp(5rem, 16vh, 10rem); padding-block: clamp(2rem, 6vh, 4rem); }
 .beat { max-width: 46ch; }
 .beat .beat-no {
@@ -729,6 +825,11 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
 }
 .why-cell h3 { margin-bottom: 0.8rem; color: var(--charcoal) !important; }
 .why-cell p { font-size: 15px; }
+/* Dark-section variant — without this the charcoal !important heading is
+   near-invisible against the dark ground. */
+.section--dark .why-cell { background: var(--charcoal-2); background-image: var(--topo); }
+.section--dark .why-cell h3 { color: var(--white) !important; }
+.section--dark .why-cell p { color: #C9C4C2; }
 
 /* ---------- Stories (testimonials, Quanta pattern: red left border) ---------- */
 .stories-grid {
@@ -766,7 +867,9 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   padding-block: clamp(5rem, 12vw, 10rem);
 }
 .cta-band .chip { margin-bottom: 2.2rem; }
-.cta-band h2 { font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 0; }
+/* Must stay below .page-hero h1 at every viewport — see the display scale
+   note at the top. At 7vw this outran the page title on all 9 pages. */
+.cta-band h2 { font-size: clamp(2.2rem, 3.7vw, 3.6rem); margin-bottom: 0; }
 .cta-band .cta-side {
   margin-top: 3rem;
   display: flex;
@@ -804,7 +907,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   pointer-events: none;
 }
 .page-hero .container { position: relative; z-index: 2; }
-.page-hero h1 { max-width: 14ch; font-size: clamp(3rem, 6.4vw, 6.4rem); }
+.page-hero h1 { max-width: 14ch; font-size: clamp(2.4rem, 4.4vw, 4.4rem); }
 .page-hero .lede { margin-top: 1.6rem; }
 .page-hero .vrule-inline {
   position: absolute;
@@ -837,7 +940,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
 }
 .detail-body h2 {
   margin-block: 2.8rem 1.1rem;
-  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  font-size: clamp(1.5rem, 2.25vw, 2.2rem);
   color: var(--red);
 }
 .detail-body h2:first-child { margin-top: 0; }
@@ -884,6 +987,9 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
 }
 .process-step h3 { margin-bottom: 6px; color: var(--charcoal) !important; }
 .process-step p { font-size: 15px; }
+/* The step card stays white inside a dark section, so its copy must not
+   inherit the section's white text colour. */
+.section--dark .process-step p { color: var(--gray-600); }
 
 /* ---------- Projects ---------- */
 .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
@@ -1046,6 +1152,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   .main-nav { display: none; }
   .nav-toggle { display: flex; }
   .cap2-grid { grid-template-columns: 1fr; }
+  .cap2-left { position: static; top: auto; }
   .cap2-left h2 { max-width: none; }
   .case-row, .case-row--flip { grid-template-columns: 1fr; }
   .case-row--flip .case-media { order: 0; }
@@ -1061,7 +1168,7 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   :root { --header-h: 74px; --header-h-scrolled: 60px; }
   .stats-grid { grid-template-columns: 1fr; }
   .stat-cell { min-height: 26svh; display: flex; flex-direction: column; justify-content: center; }
-  .stat-num { font-size: clamp(4rem, 18vw, 6rem); }
+  .stat-num { font-size: clamp(3rem, 13vw, 4.4rem); }
   .why-grid { grid-template-columns: 1fr; }
   .proj-grid { grid-template-columns: 1fr; }
   .quote-form { grid-template-columns: 1fr; }
@@ -1069,7 +1176,6 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   .header-cta { display: none; }
   .process-step { grid-template-columns: 1fr; gap: 0.8rem; }
   .vrule::before { display: none; }
-  .cap2-item { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
   h1, .h1 { letter-spacing: 0.07em; }
 }
 
@@ -1127,7 +1233,12 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
 }
 .founder-card h3 {
   font-family: var(--font-display);
-  font-size: 1.95rem;
+  /* Was a flat 1.95rem — the only heading on the site that did not scale
+     at all. At 375px that made a founder's name (31.2px) larger than the
+     section heading above it (24px); at 1280 it sat off the h3 step.
+     Now scales, and sits one notch under h3 because these are card
+     labels nested inside a section, not section headings themselves. */
+  font-size: clamp(1.25rem, 1.6vw, 1.6rem);
   color: var(--red) !important;
   margin-bottom: 0.6rem;
   text-transform: none; /* Keep natural casing as requested/shown */
@@ -1141,4 +1252,199 @@ h3, .h3 { font-size: clamp(1.5rem, 2.4vw, 2.1rem); letter-spacing: 0.07em; }
   color: var(--gray-600);
   max-width: 32ch;
   margin: 0 auto;
+}
+.section--dark .founder-card h3 { color: var(--white) !important; }
+.section--dark .founder-card p { color: #C9C4C2; }
+
+/* ---------- Capability list descriptors (homepage cap2 grid) ---------- */
+.cap2-media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  margin-bottom: 18px;
+  background: var(--charcoal);
+}
+.cap2-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s var(--ease-heavy);
+}
+.cap2-item:hover .cap2-media img { transform: scale(1.05); }
+.cap2-desc {
+  margin-top: 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--gray-500);
+  letter-spacing: 0;
+  text-transform: none;
+  max-width: 46ch;
+}
+.cap2-item:hover .cap2-desc { color: #C9C4C2; }
+
+/* ---------- Full-bleed photo band (service pages) ---------- */
+.photo-band {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background: var(--charcoal-2);
+}
+.photo-band img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.photo-band figcaption {
+  position: absolute;
+  left: 0; bottom: 0;
+  z-index: 2;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+}
+@media (max-width: 768px) {
+  .photo-band { aspect-ratio: 4 / 3; }
+}
+
+/* ---------- FAQ ---------- */
+.faq-list {
+  border-top: 1px solid var(--gray-200);
+  margin-top: 2.5rem;
+}
+.section--dark .faq-list { border-color: rgba(255,255,255,0.14); }
+.faq-item {
+  border-bottom: 1px solid var(--gray-200);
+  padding: 1.5rem 0;
+}
+.section--dark .faq-item { border-color: rgba(255,255,255,0.14); }
+.faq-item summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-label);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--charcoal);
+}
+.section--dark .faq-item summary { color: var(--white); }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+";
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  background: var(--red);
+  color: var(--white);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.35s var(--ease-heavy);
+}
+.faq-item[open] summary::after { transform: rotate(45deg); }
+.faq-item p {
+  margin-top: 1rem;
+  max-width: 68ch;
+  font-size: 15px;
+}
+.section--dark .faq-item p { color: #C9C4C2; }
+
+/* ---------- Integration mission (homepage #integration) ----------
+   Expresses the client's stated mission: advanced electrical and advanced
+   solar have drifted into separate trades, and Augzet closes the gap by
+   integrating new solar into the electrical system that is already there.
+
+   BRAND CONSTRAINT, do not break it: electrical is the core business and
+   solar is one of four services. The strip therefore reads left to right
+   as ELECTRICAL -> THE JOIN -> SOLAR, electrical first, with the inverter
+   (the actual physical point where a solar array meets a building's
+   electrical system) carrying the red accent as the middle term. Two of
+   the three tiles are electrical. Never reorder these so solar leads, and
+   never drop the middle tile — without it the section reads as a solar
+   ad rather than an integration argument. */
+.gap-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+.gap-tile {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--charcoal-2);
+  border-bottom: 3px solid var(--gold);
+}
+.gap-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s var(--ease-heavy);
+}
+.gap-tile:hover img { transform: scale(1.04); }
+.gap-tile figcaption {
+  position: absolute;
+  left: 0; bottom: 0;
+  z-index: 2;
+  background: var(--charcoal-2);
+  color: var(--white);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+}
+/* middle term = the integration point, flagged in the primary red */
+.gap-tile--join { border-bottom-color: var(--red); }
+.gap-tile--join figcaption { background: var(--red); }
+
+/* Credentials, paired with the one photograph of Augzet's own engineer on
+   site. Media column carries no [data-reveal] — same rule as .case-media
+   elsewhere in this file: a reveal must never gate image visibility. */
+.gap-proof {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+.gap-proof-media {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--charcoal-2);
+  border-bottom: 3px solid var(--gold);
+}
+.gap-proof-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gap-cred { display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 1.5rem); }
+.gap-cred-cell {
+  background: var(--charcoal-2);
+  background-image: var(--topo);
+  border-left: 3px solid var(--red);
+  padding: clamp(1.3rem, 2.2vw, 1.9rem);
+}
+.gap-cred-cell h3 { color: var(--white) !important; margin-bottom: 0.55rem; }
+.gap-cred-cell p { color: #C9C4C2; font-size: 15px; max-width: var(--measure); }
+
+@media (max-width: 860px) {
+  .gap-strip { grid-template-columns: 1fr; }
+  .gap-tile { aspect-ratio: 16 / 10; }
+  .gap-proof { grid-template-columns: 1fr; }
+  .gap-proof-media { aspect-ratio: 4 / 3; }
 }

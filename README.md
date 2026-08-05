@@ -1,6 +1,8 @@
 # Augzet Engineers — Website
 
-A multipage marketing site for **Augzet Engineers** (Solar EPC · Electrical Design · Home Automation · Testing & Maintenance — Ernakulam, Kerala), built on the visual chassis of quantaservices.com: cinematic dark-dignity hero, scribed capability grid, mono-type engineering metadata, and a single loud conversion color.
+A multipage marketing site for **Augzet Engineers** — a team of electrical engineers, consultants and contractors in Ernakulam, Kerala. Built on the visual chassis of quantaservices.com: cinematic dark-dignity hero, scribed capability grid, mono-type engineering metadata, and a single loud conversion color.
+
+**Positioning:** the core is electrical. Capabilities are ordered Electrical System Design → Home Automation → Solar Power → Testing & Maintenance, matching the order on the client's own live site (augzet.com). Solar is one of four capabilities, not the headline.
 
 ## Run locally
 
@@ -51,5 +53,6 @@ All copy, stats (186+ projects, 1,000+ kW, 1,00,000+ kg CO₂, 40-day MNRE subsi
 
 - `prefers-reduced-motion` honored everywhere (reveals become instant, animations stop)
 - Mobile-first responsive: full-bleed poster panels, stacked stats, full-screen overlay menu
-- No images — all visuals are inline SVG scenes (zero network weight, crisp at any DPI)
+- Real client photography in `assets/img/photos/` (resized with ffmpeg to 1600w and 1000w JPEG; WebP was tested and did not beat JPEG on these already-compressed sources). Remaining decorative visuals are inline SVG.
+- **Temporary placeholders:** a few images are hotlinked from Unsplash while waiting on client photos — every one is marked with `data-temp-image` in the HTML plus a `<!-- TEMP -->` comment. Grep for `data-temp-image` to find and replace them all.
 - The contact form is client-side demo only: wire `.quote-form` submit in `assets/js/main.js` to your endpoint/CRM to go live

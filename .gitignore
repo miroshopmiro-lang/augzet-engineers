@@ -11,6 +11,12 @@ studio/.env
 studio/.env.*
 studio/package-lock.json
 
+# Raw client photo drops (originals live outside the build)
+28-07-26/
+# WhatsApp album drops — extract, optimise into assets/img/photos/, then
+# leave the archive out of the repo.
+WhatsApp*.zip
+
 # Environment variables
 .env
 .env.local
