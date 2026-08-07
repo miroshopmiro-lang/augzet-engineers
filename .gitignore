@@ -23,3 +23,10 @@ WhatsApp*.zip
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Video masters. Only the compressed clips in assets/video/ are deployed —
+# the .src.mp4 originals are 5-7 MB each and are kept locally for re-encodes.
+assets/img/*.src.mp4
+
+# Sanity Studio build output — 6.6 MB of vendor bundles no page references.
+static/

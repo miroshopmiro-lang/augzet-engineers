@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sanity Studio build output — vendor bundles, no page content.
+Disallow: /static/
+Disallow: /studio/
+Disallow: /admin/
+
+Sitemap: https://augzet.com/sitemap.xml

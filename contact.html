@@ -5,11 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Get a Quote: Augzet Engineers</title>
 <meta name="description" content="Request a free, simulation-backed quote for solar, electrical design, automation or maintenance. Augzet Engineers: 0484-2684066 · info@augzet.com · Ernakulam, Kerala.">
+<link rel="canonical" href="https://augzet.com/contact.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Augzet Engineers">
+<meta property="og:locale" content="en_IN">
+<meta property="og:url" content="https://augzet.com/contact.html">
+<meta property="og:title" content="Get a Quote: Augzet Engineers">
+<meta property="og:description" content="Request a free, simulation-backed quote for solar, electrical design, automation or maintenance. Augzet Engineers: 0484-2684066 · info@augzet.com · Ernakulam, Kerala.">
+<meta property="og:image" content="https://augzet.com/assets/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="An Augzet engineer on site in a hard hat, checking the installation against the drawing set.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Get a Quote: Augzet Engineers">
+<meta name="twitter:description" content="Request a free, simulation-backed quote for solar, electrical design, automation or maintenance. Augzet Engineers: 0484-2684066 · info@augzet.com · Ernakulam, Kerala.">
+<meta name="twitter:image" content="https://augzet.com/assets/img/og-card.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Oxygen:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/main.css">
 <link rel="icon" type="image/png" href="/assets/img/favicon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://augzet.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Contact",
+      "item": "https://augzet.com/contact.html"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -55,7 +90,10 @@
   <div class="container">
     <div class="detail-grid">
       <div data-reveal>
-        <form class="quote-form" novalidate>
+        <!-- `novalidate` removed 2026-08-07: it made every `required`
+             attribute below inert, so an empty form submitted cleanly.
+             Native validation now runs (see initForm in main.js). -->
+        <form class="quote-form">
           <div class="field">
             <label for="f-name">Your Name *</label>
             <input id="f-name" name="name" type="text" required autocomplete="name">
@@ -104,10 +142,14 @@
             <p class="form-note">No hidden charges. No obligation. An engineer reviews every request.</p>
           </div>
         </form>
+        <!-- This panel must never claim receipt. Nothing is stored server
+             side yet; the handler opens a pre-filled mail draft, so the
+             enquiry is only sent once the visitor presses send in their
+             own mail app. Wording states exactly that. -->
         <div class="form-success" role="status">
-          RECEIVED.<br>
-          AN ENGINEER REVIEWS EVERY REQUEST. EXPECT A RESPONSE WITHIN ONE BUSINESS DAY.<br>
-          URGENT? CALL 0484-2684066.
+          YOUR MAIL APP IS OPENING WITH THESE DETAILS FILLED IN.<br>
+          PRESS SEND AND AN ENGINEER WILL REVIEW IT WITHIN ONE BUSINESS DAY.<br>
+          NOTHING OPENED, OR IN A HURRY? CALL <a href="tel:04842684066">0484-2684066</a>.
         </div>
       </div>
 
@@ -124,6 +166,12 @@
         <div class="aside-cell aside-cell--dark">
           <p class="mono-meta" style="color:var(--gold)">Visit Us</p>
           <p>Door No: 105, Royal Way Building,<br>Muttom, Near Metro Pillar No: 182,<br>Ernakulam, Kerala 683106</p>
+          <p style="margin-top: 10px;">
+            <a href="https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg90gEIMjMzMmowajeoAgCwAgA&amp;um=1&amp;ie=UTF-8&amp;fb=1&amp;gl=in&amp;sa=X&amp;geocode=Ked0QrhBDQg7MeK0vdpfwHlo&amp;daddr=Metro+Pillar+No:+182,+Door+No:+105,+Royal+Way+Building+Near,+Muttom,+Aluva,+Kochi,+Kerala+683106" target="_blank" rel="noopener noreferrer" style="color:var(--gold); font-weight:600; font-size:14px; display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              Open in Google Maps ↗
+            </a>
+          </p>
         </div>
         <div class="aside-cell aside-cell--dark">
           <p class="mono-meta" style="color:var(--gold)">What Happens Next</p>
@@ -133,6 +181,41 @@
     </div>
   </div>
 </section>
+
+<section class="section section--dark texture-topo map-section">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="chip">Location</span>
+      <h2>Find Us <span class="t-gold">On Map</span></h2>
+      <p class="lede lede--dark">Augzet Engineers, Metro Pillar No: 182, Door No: 105, Royal Way Building Near, Muttom, Aluva, Kochi, Kerala 683106</p>
+    </div>
+    <div class="map-wrapper" data-reveal data-reveal-delay="0.15">
+      <iframe
+        title="Augzet Engineers Google Maps Location"
+        src="https://maps.google.com/maps?q=Augzet+Engineers,+Metro+Pillar+No:+182,+Door+No:+105,+Royal+Way+Building+Near,+Muttom,+Aluva,+Kochi,+Kerala+683106&amp;t=&amp;z=16&amp;ie=UTF8&amp;iwloc=&amp;output=embed"
+        width="100%"
+        height="480"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+      <div class="map-overlay-card">
+        <div class="map-card-head">
+          <svg class="map-pin-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <div>
+            <strong>Augzet Engineers</strong>
+            <p>Muttom, Aluva, Kochi, Kerala 683106</p>
+          </div>
+        </div>
+        <a href="https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg90gEIMjMzMmowajeoAgCwAgA&amp;um=1&amp;ie=UTF-8&amp;fb=1&amp;gl=in&amp;sa=X&amp;geocode=Ked0QrhBDQg7MeK0vdpfwHlo&amp;daddr=Metro+Pillar+No:+182,+Door+No:+105,+Royal+Way+Building+Near,+Muttom,+Aluva,+Kochi,+Kerala+683106" target="_blank" rel="noopener noreferrer" class="btn btn--sm">
+          Open Google Maps <span class="arr">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <footer class="site-footer">
   <div class="container">
@@ -150,9 +233,9 @@
       <div class="footer-col">
         <h4>Capabilities</h4>
         <ul>
-          <li><a href="/services/solar-power.html">Solar Power Projects</a></li>
           <li><a href="/services/electrical-design.html">Electrical System Design</a></li>
           <li><a href="/services/home-automation.html">Home Automation</a></li>
+          <li><a href="/services/solar-power.html">Solar Power Projects</a></li>
           <li><a href="/services/testing-maintenance.html">Testing &amp; Maintenance</a></li>
         </ul>
       </div>
@@ -182,6 +265,24 @@
     </div>
   </div>
 </footer>
+
+<!-- Sticky mobile action bar. Below 1024px the header CTA is hidden and the
+     phone number otherwise appears only in the footer, ~22 screens down.
+     [CONFIRM] A WhatsApp action belongs here too — it is the dominant
+     channel in Kerala — but no wa.me number has been confirmed by the
+     client, and guessing one would send enquiries into a dead chat. Ask
+     for the business WhatsApp number, then uncomment the block below. -->
+<div class="action-bar">
+  <a class="ab-call" href="tel:04842684066">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></svg>
+    Call Us
+  </a>
+  <!-- <a class="ab-call" href="https://wa.me/91XXXXXXXXXX">WhatsApp</a> -->
+  <a class="ab-quote" href="/contact.html">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2H4V4zm0 5h16v2H4V9zm0 5h10v2H4v-2zm14.6 8.2-3.1.7.7-3.1 5.3-5.3 2.4 2.4-5.3 5.3z"/></svg>
+    Get a Quote
+  </a>
+</div>
 
 <script src="/assets/js/vendor/gsap.min.js"></script>
 <script src="/assets/js/vendor/ScrollTrigger.min.js"></script>

@@ -17,8 +17,20 @@
   --gray-600:     #454545;  /* body text on light */
   --red:          #CD0A1B;  /* Primary Red */
   --red-2:        #B3000E;  /* Darker Red (hover) */
-  --gold:         #CD0A1B;  /* Mapped to Red (Black, White & Red only) */
-  --gold-2:       #B3000E;  /* Mapped to Darker Red */
+  /* ---- Gold: restored 2026-08-07 ----
+     --gold was remapped to --red at some point, which silently collapsed
+     every two-tone relationship in the system into one colour: chips,
+     btn-bar primary vs secondary, .t-gold accents, the .gap-tile--join
+     marker, .vrule vs .vrule--red, .aside-cell vs --dark. It also broke
+     contrast in 33 places sitewide, because .chip and .eyebrow set dark
+     text on a gold ground — legible on gold (7.60:1), a fail on red
+     (3.10:1 against a 4.5:1 requirement).
+
+     GOLD IS A DARK-GROUND COLOUR ONLY. #F0941D on --light is 2.13:1.
+     Never set gold text or a gold-background/dark-text chip on a light
+     section — see the .t-gold and .eyebrow overrides further down. */
+  --gold:         #F0941D;  /* gold-300 — accent on dark grounds */
+  --gold-2:       #D97F10;  /* darker gold (hover) */
   --white:        #FFFFFF;
   --black:        #000000;
 
@@ -68,13 +80,58 @@ ul, ol { list-style: none; }
 button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
 ::selection { background: var(--red); color: var(--white); }
 
+/* ---------- Focus states ----------
+   Added 2026-08-07. Before this the stylesheet contained exactly one
+   :focus rule (form fields) and zero :focus-visible rules, so every
+   link, button, nav item, filter and CTA on all nine pages fell back to
+   the browser default ring — effectively invisible over the fixed dark
+   header and the charcoal/red surfaces. WCAG 2.4.7.
+
+   Two variants because no single colour clears 3:1 on both grounds:
+   gold is 7.60:1 on charcoal but 2.13:1 on --light, so light sections
+   take charcoal instead. :focus-visible (not :focus) so a mouse click
+   does not leave a ring behind. */
+:is(a, button, summary, [tabindex]):focus-visible,
+.field :is(input, select, textarea):focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+.section--concrete :is(a, button, summary):focus-visible,
+.section--concrete2 :is(a, button, summary):focus-visible,
+.why-cell :is(a, button):focus-visible,
+.process-step :is(a, button):focus-visible,
+.aside-cell:not(.aside-cell--dark) :is(a, button):focus-visible,
+.proj-card :is(a, button):focus-visible,
+.filter-bar button:focus-visible {
+  outline-color: var(--charcoal);
+}
+/* Keep the existing field border cue alongside the ring. */
+.field :is(input, select, textarea):focus-visible { border-color: var(--gold); }
+
 /* ---------- Display type (Quanta: condensed caps, 0.1em tracking) ---------- */
+/* ---- Headings: sentence case, 2026-08-07 ----
+   Every heading on the site was tracked uppercase — 29 of 31 on the
+   homepage. None of the three benchmark electrical contractors (Faith
+   Technologies, Sterling & Wilson, Rosendin) sets headlines that way;
+   all three reserve caps for eyebrows and labels, which is what .chip,
+   .eyebrow and .mono-meta already do here.
+
+   The scale was drawn for Bebas Neue, a condensed display face. The site
+   now loads Oxygen, a humanist sans, which at 0.1em tracking occupies
+   roughly 40% more width per line in caps. That gap is the whole of the
+   client's "fonts are extremely large / looks zoomed in" report: the type
+   was not just big, it was set in the widest possible configuration of a
+   face that was never meant to carry it.
+
+   Sentence case also reads faster and lets each step sit a little larger
+   without shouting. Copy in the HTML is already written sentence case —
+   it was only ever being uppercased in CSS — so nothing needed rewriting. */
 h1, .h1, h2, .h2, h3, .h3 {
   font-family: var(--font-display);
   font-weight: 400;
-  text-transform: uppercase;
-  line-height: 1.12;
-  letter-spacing: var(--track-display);
+  text-transform: none;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
   color: inherit;
 }
 /* ---- Display scale ----
@@ -95,14 +152,29 @@ h1, .h1, h2, .h2, h3, .h3 {
       free quote" was the largest text on all 9 pages (89.6px vs 81.9px at
       1280, 112px vs 99.2px at 1920). Any change to these clamps must
       preserve h1 > h2 across the full 375-1920 range. */
-h1, .h1 { font-size: clamp(2.4rem, 4.6vw, 4.6rem); }
-h2, .h2 { font-size: clamp(2rem, 3.3vw, 3.25rem); }
-h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
+/* Sizes trimmed a step from the uppercase scale: sentence case with
+   ascenders and descenders reads optically larger than caps at the same
+   point size, so holding the old numbers would have kept the "zoomed in"
+   feel while losing the one thing caps were buying (a flat, even block). */
+h1, .h1 { font-size: clamp(2.3rem, 4.3vw, 4.2rem); }
+h2, .h2 { font-size: clamp(1.8rem, 2.95vw, 2.85rem); }
+h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-height: 1.25; }
 
 /* two-tone stacked headlines: white → gold on dark, all-red on light */
 .t-gold { color: var(--gold); }
 .t-red { color: var(--red); }
 .t-white { color: var(--white); }
+
+/* ---- .t-gold on light grounds ----
+   The rule above is written for dark sections, where gold measures
+   7.60:1. On --light it is 2.13:1 — a worse failure than the red it
+   replaced. The original design intent (recorded in the header comment
+   of this file) was "white → gold on dark, all-red on light", but the
+   light half was never written, so restoring --gold without this would
+   have shipped six unreadable headline halves on index.html and
+   about.html. Light sections take red, matching their h2/h3 colour. */
+.section--concrete .t-gold,
+.section--concrete2 .t-gold { color: var(--red); }
 
 .lede {
   font-size: clamp(0.98rem, 1.2vw, 1.1rem);
@@ -409,7 +481,7 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 11vw, 4rem);
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--white);
   padding-block: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -454,11 +526,21 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   height: 100%;
   object-fit: cover;
 }
+/* ---- Hero scrim ----
+   Was 0.42 → 0.12 → 0.12 → 0.6. The 0.12 band sits exactly where the
+   headline and subhead land, and the footage there is bright sky and
+   sunlit panels, so white type washed out badly (visible only in a
+   render — computed colour values look fine because the text colour
+   never changes, the ground behind it does).
+   Two layers now: a vertical gradient for the overall grade, plus a
+   soft radial pool behind the centred content block. The radial keeps
+   the edges of the frame open so the footage still reads. */
 .hero-scrim {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to bottom, rgba(26,23,23,0.42) 0%, rgba(26,23,23,0.12) 30%, rgba(26,23,23,0.12) 62%, rgba(26,23,23,0.6) 100%);
+    radial-gradient(ellipse 78% 62% at 50% 46%, rgba(16,14,14,0.62) 0%, rgba(16,14,14,0.34) 55%, rgba(16,14,14,0) 100%),
+    linear-gradient(to bottom, rgba(26,23,23,0.55) 0%, rgba(26,23,23,0.28) 26%, rgba(26,23,23,0.32) 62%, rgba(26,23,23,0.72) 100%);
   pointer-events: none;
 }
 .hero-content {
@@ -470,12 +552,26 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
 }
 .hero-content h1 {
   /* The homepage hero is the one place on the site that earns the largest
-     type: full-bleed video behind it, two short hard-broken lines, no
-     competing content. It sits one step above .page-hero h1 by design. */
-  font-size: clamp(2.6rem, 4.9vw, 4.9rem);
+     type: full-bleed video behind it, three short hard-broken lines, no
+     competing content. It sits one step above .page-hero h1 by design.
+
+     Sentence case, not the sitewide tracked uppercase. 29 of 31 headings
+     on this page were uppercase; none of the three benchmark contractors
+     (Faith, Sterling & Wilson, Rosendin) sets headlines that way — all
+     reserve caps for eyebrows. Uppercase at 0.1em tracking also costs
+     ~40% more width in Oxygen (a humanist sans) than in the condensed
+     face this scale was originally drawn for, which is the whole of the
+     client's "fonts look zoomed in" report. Sentence case lets the line
+     sit larger and still read faster.
+     max-width uses min() so the ch cap can never exceed the column on a
+     narrow phone. */
+  font-size: clamp(2.35rem, 4.6vw, 4.4rem);
   margin-inline: auto;
-  max-width: 18ch;
-  text-shadow: 0 2px 28px rgba(0,0,0,0.5);
+  max-width: min(20ch, 100%);
+  text-transform: none;
+  letter-spacing: -0.005em;
+  line-height: 1.06;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.55);
 }
 .hero-content h1 .accent {
   color: var(--gold);
@@ -484,16 +580,58 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   -webkit-background-clip: text;
   background-clip: text;
 }
+/* ---- Hero subhead ----
+   This is the only place on the page that says what the business does,
+   and it was set in the least readable style available: 13.6px uppercase
+   at 0.24em tracking, which on a phone became a four-line wall of spaced
+   capitals over bright footage. Now sentence case at a real reading size
+   with normal tracking. min() again so the ch cap can't beat the column. */
 .hero-sub {
-  margin: 1.6rem auto 0;
-  max-width: 60ch;
-  font-family: var(--font-label);
-  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  margin: 1.4rem auto 0;
+  max-width: min(52ch, 100%);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.25vw, 1.15rem);
   font-weight: 400;
-  letter-spacing: 0.24em;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 16px rgba(0,0,0,0.5);
+}
+
+/* ---- Hero proof line ----
+   Moves the only externally verifiable proof the firm has (the Google
+   rating) and its statutory credential above the fold. Previously the
+   reviews first appeared at section 11 of 13, roughly 85% scroll depth. */
+.hero-proof {
+  margin: 1.8rem auto 0;
+  max-width: min(80ch, 100%);
+  font-family: var(--font-label);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.82);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 22px;
+  text-shadow: 0 1px 14px rgba(0,0,0,0.6);
 }
+/* Each fact is one unbreakable unit, separated by a rule rather than a
+   mid-sentence interpunct so a wrap never splits a claim in half. */
+.hero-proof-item { display: inline-flex; align-items: center; gap: 9px; }
+.hero-proof-item + .hero-proof-item { position: relative; }
+@media (min-width: 721px) {
+  .hero-proof-item + .hero-proof-item::before {
+    content: "";
+    width: 1px; height: 13px;
+    background: rgba(255,255,255,0.32);
+    margin-right: 13px;
+  }
+}
+.hero-stars { color: var(--gold); letter-spacing: 0.18em; font-size: 13px; }
 .hero-ctas {
   margin-top: 2.6rem;
   display: flex;
@@ -501,6 +639,39 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   flex-wrap: wrap;
   gap: 18px;
 }
+/* ---------- Hero buffering indicator ----------
+   Bottom-right rather than centred: centred would sit on top of the H1,
+   and the poster image means the hero is never actually blank, so this
+   is a quiet "still loading" signal, not a blocking state. Gold ring on
+   a translucent track so it reads on any frame of the video behind it. */
+.hero-loader {
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 3rem);
+  bottom: clamp(1.25rem, 4vw, 2.5rem);
+  z-index: 3;
+  width: 30px; height: 30px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s var(--ease-heavy);
+}
+.hero-loader span {
+  display: block;
+  width: 100%; height: 100%;
+  border: 2px solid rgba(255,255,255,0.28);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: hero-spin 0.9s linear infinite;
+}
+/* .is-hidden rather than display:none so it fades rather than snapping */
+.hero-loader.is-hidden { opacity: 0; }
+@keyframes hero-spin { to { transform: rotate(360deg); } }
+
+/* Motion-sensitive users get a static ring instead of a spinner. It still
+   fades out on play, so it stays informative without rotating. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-loader span { animation: none; border-top-color: var(--gold); }
+}
+
 .scroll-cue {
   position: absolute;
   left: 50%;
@@ -587,7 +758,7 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   font-family: var(--font-display);
   font-size: clamp(1.4rem, 2vw, 1.9rem);
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--white);
   max-width: 20ch;
   line-height: 1.25;
@@ -610,7 +781,7 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 2.65vw, 2.6rem);
   letter-spacing: 0.09em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--white);
   padding-block: clamp(1.6rem, 3.2vw, 3rem);
   border-bottom: 1px solid rgba(255,255,255,0.09);
@@ -909,7 +1080,13 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
 .page-hero .container { position: relative; z-index: 2; }
 .page-hero h1 { max-width: 14ch; font-size: clamp(2.4rem, 4.4vw, 4.4rem); }
 .page-hero .lede { margin-top: 1.6rem; }
-.page-hero .vrule-inline {
+/* The signature gold accent rule on inner-page heroes.
+   `.page-hero-rule` is the class the HTML actually ships — it appears on
+   7 pages and had no CSS at all, so the accent silently never rendered
+   anywhere. `.vrule-inline` was the name in the stylesheet and is used
+   by nothing. Both are matched here rather than renaming across 7 files. */
+.page-hero .vrule-inline,
+.page-hero > .page-hero-rule {
   position: absolute;
   top: 0;
   left: calc(var(--container-pad) + 4px);
@@ -1140,6 +1317,250 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
 }
 .footer-tagline { color: var(--gold); }
 
+/* ---------- Sticky mobile action bar ----------
+   Added 2026-08-07. On phones .header-cta is display:none, so below
+   1024px the site had no visible quote action and no tap-to-call at all
+   — the phone number appeared only in the pre-footer and footer as
+   17-18px links, roughly 22 screens down. For a local contractor whose
+   customers phone, that was the single largest conversion gap.
+
+   Fixed to the bottom on touch widths only. Two actions, matching the
+   hero's hierarchy: red = primary (quote), gold = call. The body gets
+   bottom padding so the footer can still be reached past the bar. */
+.action-bar {
+  display: none;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 110;
+  background: var(--charcoal-2);
+  border-top: 3px solid var(--gold);
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  gap: 10px;
+}
+.action-bar a {
+  flex: 1;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 10px;
+}
+.action-bar .ab-call { background: var(--gold); color: var(--charcoal-2); }
+.action-bar .ab-quote { background: var(--red); color: var(--white); }
+.action-bar svg { width: 17px; height: 17px; fill: currentColor; flex: none; }
+@media (max-width: 1024px) {
+  .action-bar { display: flex; }
+  body { padding-bottom: 78px; }
+  /* The overlay menu is fixed at a higher z-index; keep the bar out of it. */
+  .mobile-menu.is-open ~ .action-bar { display: none; }
+}
+
+/* Screen-reader-only, for the projects filter live region. */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Touch targets ----------
+   Footer links measured 18px tall, .link-arrow 30px, nav 37px, and the
+   pre-footer phone/email links 17px — all under the 44px minimum, on a
+   site whose customers are mostly on phones. Padding rather than height
+   so nothing reflows on desktop. */
+@media (max-width: 1024px) {
+  .footer-col a,
+  .footer-col address a,
+  .cta-contact-mono a,
+  .mm-foot .mono-meta a {
+    display: inline-block;
+    padding-block: 11px;
+    min-height: 44px;
+  }
+  .footer-col ul { gap: 2px; }
+  .link-arrow { padding-block: 7px; min-height: 44px; }
+}
+
+/* ---------- Fact pills ----------
+   Replaced a full-height photo beside three ~30-word credential cells.
+   Three facts do not need three paragraphs; they need three words each. */
+.fact-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+.fact-pills li {
+  font-family: var(--font-label);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  background: var(--white);
+  border-left: 3px solid var(--red);
+  padding: 11px 18px;
+}
+.section--dark .fact-pills li { background: var(--charcoal-2); color: var(--white); }
+
+/* ---------- Compact stats ----------
+   Was a full section: chip, heading, then four cells at 63px each with
+   3.6rem of padding — roughly a screen and a half for four numbers. Now
+   one inline strip, no heading, no chip. */
+.stats-band--compact { padding-block: clamp(2.2rem, 4vw, 3rem); }
+.stats-band--compact .stats-grid {
+  border: none;
+  background: none;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: repeat(4, 1fr);
+  /* .stats-grid is a sibling of .container by design (the full-bleed band
+     with internal dividers), so it carries no outer padding of its own —
+     the base .stat-cell's clamp(2.2rem,4vw,3.6rem) padding was the ONLY
+     thing keeping the first and last cells off the screen edge. Zeroing
+     that cell padding below for the compact variant removed it, so
+     "186+ Projects Delivered" and the last cell ran flush to the viewport
+     edge. Restored here at the grid level instead of per-cell, since gap
+     already handles the spacing between cells. */
+  padding-inline: var(--container-pad);
+}
+.stats-band--compact .stat-cell { background: none; padding: 0; }
+.stats-band--compact .stat-num { font-size: clamp(1.7rem, 2.6vw, 2.5rem); }
+.stats-band--compact .stat-label { margin-top: 6px; font-size: 11px; letter-spacing: 0.16em; }
+@media (max-width: 720px) {
+  .stats-band--compact .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.6rem 1rem; }
+  .stats-band--compact .stat-cell { min-height: 0; display: block; }
+  .stats-band--compact .stat-num { font-size: clamp(1.6rem, 8vw, 2.1rem); }
+}
+
+/* ---------- Founders strip ----------
+   Three names should cost three lines, not a section. No chip, no
+   section-head, and still a fraction of a .section's padding — but
+   bumped a notch on 2026-08-07 ("a teeny weeny bit bigger") now that the
+   bios are full sentences instead of abbreviations and two of the three
+   photos are real: 72px portraits (was 56px), a little more type, a
+   little more air. Still a strip, not a card grid. */
+/* White, not the hatched light ground — the reviews section below uses
+   that same ground, so matching it merged the two into one long pale
+   area with a 200px hole in the middle. White reads the strip as a rule
+   between sections instead of a section of its own. */
+.founders-strip {
+  padding-block: clamp(2.4rem, 4vw, 3.6rem);
+  background: var(--white);
+  border-block: 1px solid var(--gray-200);
+}
+/* The strip is already a breather; the next section does not need a full
+   section-pad on top of it. */
+.founders-strip + .reviews,
+.founders-strip + .section { padding-top: clamp(2.5rem, 5vw, 4.5rem); }
+.founders-strip h2 {
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-500) !important;
+  margin-bottom: clamp(1.5rem, 2.4vw, 2rem);
+}
+.founder-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.75rem, 4.2vw, 3.75rem);
+}
+.founder-row li { display: flex; align-items: center; gap: 18px; }
+.founder-row img {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #E5E5E5;
+  flex: none;
+}
+.founder-row span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.45;
+  font-size: 13.5px;
+  color: var(--gray-600);
+  /* The full quals run long ("Holder of Kerala State Electricity
+     Licensing Board Supervisor License") — cap the line so it wraps to
+     two short lines under the name rather than stretching the row. */
+  max-width: 30ch;
+}
+.founder-row b { font-size: 16.5px; color: var(--charcoal); font-weight: 700; margin-bottom: 1px; }
+@media (max-width: 720px) {
+  .founder-row { flex-direction: column; gap: 1.3rem; }
+  .founder-row img { width: 58px; height: 58px; }
+  .founder-row span { max-width: none; }
+}
+
+/* ---------- Scrolling reviews ----------
+   Seven real Google reviews on an infinite rail. A rail rather than a
+   three-up grid because the copy lengths are wildly uneven — one review
+   is a single word ("Kidilam") and another runs three lines — and a grid
+   forces the short ones to sit in tall empty boxes. */
+.reviews {
+  padding-block: var(--section-pad);
+  background:
+    repeating-linear-gradient(135deg, rgba(34,31,31,0.03) 0 1px, transparent 1px 9px),
+    var(--light);
+  overflow: hidden;
+}
+.reviews-head { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.reviews-head h2 { color: var(--red); }
+.review-rail { overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+.review-track { display: flex; gap: clamp(1rem, 2vw, 1.6rem); width: max-content; will-change: transform; }
+.review {
+  flex: 0 0 clamp(280px, 30vw, 380px);
+  background: var(--white);
+  border-left: 3px solid var(--red);
+  padding: clamp(1.4rem, 2.2vw, 1.9rem);
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.review-stars { color: var(--gold); font-size: 13px; letter-spacing: 0.22em; margin-bottom: 0.9rem; }
+.review blockquote { margin: 0; font-size: 15px; line-height: 1.75; color: var(--gray-600); flex: 1; }
+.review figcaption { margin-top: 1.4rem; display: flex; align-items: center; gap: 12px; }
+/* Shared by two markup shapes: a <span> initial disc (Deepak, Vinson —
+   Google never got a photo from them, only its own auto-generated colour
+   block, which isn't a photograph) and an <img> for everyone else who has
+   a real Google profile photo. object-fit only matters for the <img>
+   case but is harmless on the span. */
+.review-pfp {
+  flex: none;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--charcoal);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-label);
+  font-size: 15px;
+  font-weight: 700;
+  object-fit: cover;
+}
+.review-who { display: flex; flex-direction: column; line-height: 1.35; }
+.review-who b { font-size: 14px; color: var(--charcoal); }
+.review-who span {
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-rail { overflow-x: auto; }
+}
+
 /* ---------- Reveal primitives ---------- */
 [data-reveal] { opacity: 0; transform: translateY(28px); }
 .no-js [data-reveal] { opacity: 1; transform: none; }
@@ -1176,6 +1597,9 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   .header-cta { display: none; }
   .process-step { grid-template-columns: 1fr; gap: 0.8rem; }
   .vrule::before { display: none; }
+  /* Same reason the section vrule is hidden here: at this width the rule
+     sits inside the container padding and collides with the breadcrumb. */
+  .page-hero .vrule-inline, .page-hero > .page-hero-rule { display: none; }
   h1, .h1 { letter-spacing: 0.07em; }
 }
 
@@ -1184,6 +1608,63 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
+
+/* ---------- Absorbed fragments in #team ----------
+   The 13→6 homepage cut folded #company's facts list and #credentials'
+   qualification grid into the team section, on the reasoning that company
+   facts and qualifications belong beside the people who hold them. These
+   two rules give the seams somewhere to sit. */
+.team-facts {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(1.6rem, 3vw, 2.4rem);
+  border-top: 1px solid var(--gray-200);
+}
+.section--dark .team-facts { border-top-color: rgba(255,255,255,0.12); }
+.team-facts .case-meta {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 4px 32px;
+}
+.team-facts .case-meta dt { display: block; margin-bottom: 2px; }
+.team-facts .case-meta dd { margin-bottom: 1.1rem; }
+.team-cred-head {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  margin-bottom: clamp(1.4rem, 2.6vw, 2rem);
+  color: var(--red) !important;
+}
+.section--dark .team-cred-head { color: var(--white) !important; }
+
+/* ---------- Team row (about.html) ----------
+   Replaced .founders-feature and the separate "wider team" .case-row.
+   Founders live on the homepage; this page shows the team.
+
+   Photo beside the copy rather than a full-width tile, and capped at
+   520px: the previous version ran a 460px-tall image the full column
+   width, which was far more furniture than one group photo needs and
+   pushed the copy a screen down. */
+.team-row {
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: clamp(1.6rem, 4vw, 3.5rem);
+  align-items: center;
+}
+.team-shot {
+  margin: 0;
+  overflow: hidden;
+  background: var(--charcoal-2);
+  border-bottom: 3px solid var(--red);
+  aspect-ratio: 4 / 3;
+  max-width: 520px;
+}
+.team-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.team-note { max-width: var(--measure); }
+.team-note p { font-size: 15px; }
+@media (max-width: 780px) {
+  .team-row { grid-template-columns: 1fr; gap: 1.6rem; }
+  .team-shot { max-width: none; }
 }
 
 /* ---------- Founders Section ---------- */
@@ -1414,6 +1895,16 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
 /* middle term = the integration point, flagged in the primary red */
 .gap-tile--join { border-bottom-color: var(--red); }
 .gap-tile--join figcaption { background: var(--red); }
+/* Two photos of the one join, side by side. Overrides the single-img
+   width:100% rule above; a thin gold seam marks where they meet, which
+   is a small joke this tile can afford to make. */
+.gap-tile--split { display: flex; }
+.gap-tile--split img {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+}
+.gap-tile--split img:first-child { border-right: 1px solid rgba(240,148,29,0.6); }
 
 /* Credentials, paired with the one photograph of Augzet's own engineer on
    site. Media column carries no [data-reveal] — same rule as .case-media
@@ -1448,3 +1939,83 @@ h3, .h3 { font-size: clamp(1.4rem, 1.95vw, 1.9rem); letter-spacing: 0.07em; }
   .gap-proof { grid-template-columns: 1fr; }
   .gap-proof-media { aspect-ratio: 4 / 3; }
 }
+
+/* ---------- Map Section & Google Maps Embed ---------- */
+.map-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--charcoal-2);
+}
+.map-wrapper iframe {
+  display: block;
+  width: 100%;
+  height: 480px;
+  border: 0;
+}
+.map-overlay-card {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 10;
+  background: rgba(26, 23, 23, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(240, 148, 29, 0.3);
+  border-left: 4px solid var(--gold);
+  padding: 1.1rem 1.4rem;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  max-width: calc(100% - 48px);
+}
+.map-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.map-pin-icon {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.map-card-head strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--white);
+  line-height: 1.2;
+}
+.map-card-head p {
+  font-size: 0.85rem;
+  color: #C9C4C2;
+  margin: 0;
+}
+.btn--sm {
+  padding: 10px 18px;
+  font-size: 12.5px;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .map-wrapper iframe {
+    height: 360px;
+  }
+  .map-overlay-card {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    max-width: 100%;
+    margin: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
