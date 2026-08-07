@@ -228,16 +228,100 @@
     gsap.to(track, { x: -mHalf, duration: 28, repeat: -1, ease: "none" });
   }
 
-  /* ---------- Review rail ----------
-     Same infinite-rail technique as the marquee. The track is duplicated
-     in JS rather than in the HTML so the seven reviews are authored once
-     and stay a single source of truth. */
-  var rail = document.querySelector(".review-track");
-  if (rail) {
-    rail.innerHTML += rail.innerHTML;
-    var half = rail.scrollWidth / 2;
-    gsap.to(rail, { x: -half, duration: 60, repeat: -1, ease: "none" });
+  /* ---------- Review rail (Auto-Scroll + Mouse & Touch Drag) ---------- */
+  var railContainer = document.querySelector(".review-rail");
+  var railTrack = document.querySelector(".review-track");
+  if (railContainer && railTrack) {
+    railTrack.innerHTML += railTrack.innerHTML;
+
+    var halfWidth = 0;
+    function updateHalfWidth() {
+      halfWidth = railTrack.scrollWidth / 2;
+    }
+    updateHalfWidth();
+    window.addEventListener("resize", updateHalfWidth);
+
+    var currentX = 0;
+    var autoSpeed = -0.7; // Continuous auto-scroll speed (px/frame)
+    var isDragging = false;
+    var startX = 0;
+    var dragStartX = 0;
+    var velocity = 0;
+    var lastPointerX = 0;
+    var lastPointerTime = 0;
+
+    railContainer.style.cursor = "grab";
+    railContainer.style.userSelect = "none";
+    railContainer.style.webkitUserSelect = "none";
+    railContainer.style.touchAction = "pan-y";
+
+    function wrapX(val) {
+      if (halfWidth <= 0) return val;
+      while (val < -halfWidth) val += halfWidth;
+      while (val > 0) val -= halfWidth;
+      return val;
+    }
+
+    function render() {
+      currentX = wrapX(currentX);
+      railTrack.style.transform = "translate3d(" + currentX + "px, 0, 0)";
+    }
+
+    function tick() {
+      if (!isDragging) {
+        if (Math.abs(velocity) > 0.05) {
+          currentX += velocity;
+          velocity *= 0.94; // Inertia decay
+        } else {
+          currentX += autoSpeed;
+        }
+        render();
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    railContainer.addEventListener("pointerdown", function (e) {
+      isDragging = true;
+      startX = e.clientX;
+      dragStartX = currentX;
+      velocity = 0;
+      lastPointerX = e.clientX;
+      lastPointerTime = performance.now();
+      railContainer.style.cursor = "grabbing";
+      try {
+        railContainer.setPointerCapture(e.pointerId);
+      } catch (err) {}
+    });
+
+    railContainer.addEventListener("pointermove", function (e) {
+      if (!isDragging) return;
+      var delta = e.clientX - startX;
+      currentX = wrapX(dragStartX + delta);
+      render();
+
+      var now = performance.now();
+      var dt = now - lastPointerTime;
+      if (dt > 0) {
+        velocity = (e.clientX - lastPointerX) / dt * 16;
+        lastPointerX = e.clientX;
+        lastPointerTime = now;
+      }
+    });
+
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      railContainer.style.cursor = "grab";
+      try {
+        railContainer.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+    }
+
+    railContainer.addEventListener("pointerup", endDrag);
+    railContainer.addEventListener("pointercancel", endDrag);
   }
+
 
   initBeats(false);
   initFilters();
