@@ -45,6 +45,38 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* Multi-photo project cards */
+  .proj-media.has-gallery { position: relative; }
+  .proj-media .proj-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+    border: 0; cursor: pointer; padding: 0;
+    font-size: 22px; line-height: 1; font-family: inherit;
+    color: #fff; background: rgba(14, 21, 28, .58);
+    opacity: 0; transition: opacity .18s ease, background .18s ease;
+  }
+  .proj-media .proj-nav--prev { left: 0; }
+  .proj-media .proj-nav--next { right: 0; }
+  .proj-media .proj-nav:hover { background: rgba(14, 21, 28, .82); }
+  .proj-media.has-gallery:hover .proj-nav,
+  .proj-media .proj-nav:focus-visible { opacity: 1; }
+  .proj-media .proj-nav:focus-visible { outline: 2px solid #F0941D; outline-offset: -2px; }
+  .proj-dots {
+    position: absolute; left: 0; right: 0; bottom: 10px;
+    display: flex; justify-content: center; gap: 6px;
+  }
+  .proj-dots button {
+    width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; cursor: pointer;
+    background: rgba(255, 255, 255, .45); transition: background .18s ease, transform .18s ease;
+  }
+  .proj-dots button.is-on { background: #F0941D; transform: scale(1.25); }
+  .proj-dots button:focus-visible { outline: 2px solid #F0941D; outline-offset: 2px; }
+  /* Touch devices have no hover, so the arrows stay visible there. */
+  @media (hover: none) { .proj-media.has-gallery .proj-nav { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .proj-media .proj-nav, .proj-dots button { transition: none; }
+  }
 </style>
 <link rel="icon" type="image/png" href="/assets/img/favicon.png">
 <script type="application/ld+json">
@@ -318,6 +350,7 @@
       priceDate,
       description,
       "imageUrl": image.asset->url,
+      "gallery": gallery[].asset->url,
       stats[] {
         label,
         value
@@ -356,6 +389,53 @@
       `).join("");
     }
 
+    // Paging controls for cards that carry more than one photo. Images are all
+    // in the DOM already; this only toggles which one is visible, so there is
+    // no layout shift and no second fetch when paging.
+    function buildGallery(mediaDiv, count) {
+      mediaDiv.classList.add("has-gallery");
+      let index = 0;
+      const imgs = mediaDiv.querySelectorAll("img");
+
+      const dots = document.createElement("div");
+      dots.className = "proj-dots";
+
+      const show = (next) => {
+        index = (next + count) % count;
+        imgs.forEach((im, i) => { im.hidden = i !== index; });
+        dots.querySelectorAll("button").forEach((d, i) => {
+          d.classList.toggle("is-on", i === index);
+          d.setAttribute("aria-current", i === index ? "true" : "false");
+        });
+      };
+
+      const arrow = (dir, label, glyph) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "proj-nav proj-nav--" + dir;
+        b.setAttribute("aria-label", label);
+        b.textContent = glyph;
+        b.addEventListener("click", (e) => {
+          e.preventDefault();
+          show(index + (dir === "next" ? 1 : -1));
+        });
+        return b;
+      };
+
+      for (let i = 0; i < count; i++) {
+        const d = document.createElement("button");
+        d.type = "button";
+        d.setAttribute("aria-label", "Show photo " + (i + 1));
+        d.addEventListener("click", (e) => { e.preventDefault(); show(i); });
+        dots.appendChild(d);
+      }
+
+      mediaDiv.appendChild(arrow("prev", "Previous photo", "‹"));
+      mediaDiv.appendChild(arrow("next", "Next photo", "›"));
+      mediaDiv.appendChild(dots);
+      show(0);
+    }
+
     // 3. Construct project cards dynamically
     function createCardElement(project) {
       const article = document.createElement("article");
@@ -364,12 +444,20 @@
 
       const mediaDiv = document.createElement("div");
       mediaDiv.className = "proj-media";
-      if (project.imageUrl) {
-        const img = document.createElement("img");
-        img.src = project.imageUrl;
-        img.alt = project.title;
-        img.loading = "lazy";
-        mediaDiv.appendChild(img);
+      // Main photo first, then any gallery images the client added in the CMS.
+      const shots = [project.imageUrl].concat(project.gallery || []).filter(Boolean);
+      if (shots.length) {
+        shots.forEach((src, i) => {
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = shots.length > 1
+            ? `${project.title} — photo ${i + 1} of ${shots.length}`
+            : project.title;
+          img.loading = i === 0 ? "lazy" : "lazy";
+          if (i > 0) img.hidden = true;
+          mediaDiv.appendChild(img);
+        });
+        if (shots.length > 1) buildGallery(mediaDiv, shots.length);
       } else {
         mediaDiv.innerHTML = `
           <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">

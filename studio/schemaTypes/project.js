@@ -42,13 +42,29 @@ export default {
     },
     {
       name: 'image',
-      title: 'Project Image',
+      title: 'Main Photo',
       type: 'image',
-      description: 'Upload a representative photo. Hotspot support is enabled to let you define the focal crop.',
+      description: 'The cover photo shown first on the project card. Use a daylight, landscape shot of the finished work. Drag the hotspot onto the part that must never be cropped out.',
       options: {
         hotspot: true
       },
-      validation: Rule => Rule.required().error('Project image is required.')
+      validation: Rule => Rule.required().error('A main photo is required.')
+    },
+    {
+      name: 'gallery',
+      title: 'More Photos',
+      type: 'array',
+      description: 'Optional. Add up to 8 more photos of the same project — visitors can page through them on the card. Good extras: the distribution board, the array from the roof, the site during installation.',
+      options: {
+        layout: 'grid'
+      },
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true }
+        }
+      ],
+      validation: Rule => Rule.max(8).error('You can add a maximum of 8 additional photos.')
     },
     {
       name: 'stats',
