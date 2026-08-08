@@ -48,6 +48,11 @@
 
   /* Multi-photo project cards */
   .proj-media.has-gallery { position: relative; }
+  /* main.css stacks every .proj-media img at position:absolute; inset:0, and a
+     reset sets img{display:block}, which overrides the UA [hidden] rule. Without
+     this the "hidden" images stay painted on top of each other and paging does
+     nothing visible. Specificity (0,2,1) beats both. */
+  .proj-media img[hidden] { display: none; }
   .proj-media .proj-nav {
     position: absolute; top: 50%; transform: translateY(-50%);
     width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
@@ -248,7 +253,10 @@
 
     </div>
 
-    <p class="form-note" style="margin-top:1.6rem" data-reveal>Representative project profiles drawn from Augzet's delivery record. Client names withheld; verified outcomes quoted from public Google reviews.</p>
+    <!-- Describes the built-in placeholder cards only. Hidden as soon as real
+         projects come back from the CMS — telling visitors that genuine client
+         work is "representative" actively undercuts it. -->
+    <p class="form-note" id="proj-fallback-note" style="margin-top:1.6rem" data-reveal>Representative project profiles drawn from Augzet's delivery record. Client names withheld; verified outcomes quoted from public Google reviews.</p>
   </div>
 </section>
 
@@ -510,6 +518,13 @@
       return article;
     }
 
+    // The note under the grid is about the placeholder cards, so it only makes
+    // sense while those are on screen.
+    function setFallbackNote(showing) {
+      const note = document.getElementById("proj-fallback-note");
+      if (note) note.hidden = !showing;
+    }
+
     // 4. Fetch data from content lake CDN
     async function loadProjects() {
       injectSkeletons();
@@ -523,12 +538,15 @@
           data.result.forEach(project => {
             projGrid.appendChild(createCardElement(project));
           });
+          setFallbackNote(false);
         } else {
           projGrid.innerHTML = fallbackHTML;
+          setFallbackNote(true);
         }
       } catch (err) {
         console.warn("Sanity Content CDN fetch failed. Displaying fallback static projects.", err);
         projGrid.innerHTML = fallbackHTML;
+        setFallbackNote(true);
       } finally {
         // Broadcast completion to let GSAP/ScrollTrigger run reveals
         document.dispatchEvent(new CustomEvent("projectsRendered"));
