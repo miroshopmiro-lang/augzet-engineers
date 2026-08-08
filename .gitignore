@@ -28,5 +28,9 @@ WhatsApp*.zip
 # the .src.mp4 originals are 5-7 MB each and are kept locally for re-encodes.
 assets/img/*.src.mp4
 
-# Sanity Studio build output — 6.6 MB of vendor bundles no page references.
-static/
+# Stray root-level copy of the Sanity Studio bundle. A previous build step
+# duplicated admin/static/ to the repo root; nothing references it.
+# MUST stay anchored with a leading slash: a bare "static/" also matches
+# admin/static/, which is the studio's own deployed bundle. Un-anchoring this
+# silently strips the studio's JavaScript from the deploy and the CMS goes blank.
+/static/
