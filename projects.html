@@ -112,20 +112,18 @@
   <div class="container">
     <div class="filter-bar" role="tablist" aria-label="Filter projects">
       <button class="is-active" data-filter="all">All Work</button>
-      <button data-filter="design">Electrical Design</button>
-      <button data-filter="automation">Automation</button>
-      <button data-filter="solar">Solar EPC</button>
-      <button data-filter="amc">Maintenance</button>
+      <button data-filter="completed">Completed</button>
+      <button data-filter="ongoing">Ongoing</button>
     </div>
 
     <div class="proj-grid" data-reveal-group>
 
-      <article class="proj-card" data-cat="design">
+      <article class="proj-card" data-cat="completed">
         <div class="proj-media">
           <img src="/assets/img/photos/electrical-panel-db-1000.webp" alt="Distribution board built and wired by Augzet Engineers" width="1000" height="1333" loading="lazy" decoding="async">
         </div>
         <div class="proj-body">
-          <p class="proj-tag">Electrical Design · Residential</p>
+          <p class="proj-tag">Completed · Residential</p>
           <h3>Full Electrical Design, New Villa Build</h3>
           <p>Load study, single-line diagrams, cable routing and earthing design: a complete documented drawing set coordinated with the architect.</p>
           <div class="proj-stats">
@@ -136,12 +134,12 @@
         </div>
       </article>
 
-      <article class="proj-card" data-cat="automation">
+      <article class="proj-card" data-cat="completed">
         <div class="proj-media">
           <img src="/assets/img/photos/villa-night-lit-1000.webp" alt="Residence at dusk with lighting circuits live" width="1000" height="750" loading="lazy" decoding="async">
         </div>
         <div class="proj-body">
-          <p class="proj-tag">Automation · Green Building</p>
+          <p class="proj-tag">Completed · Green Building</p>
           <h3>IoT Automation, Green Villa Project</h3>
           <p>Lighting, climate and pump circuits under IoT control, integrated with rooftop solar for smart daytime consumption.</p>
           <div class="proj-stats">
@@ -152,12 +150,12 @@
         </div>
       </article>
 
-      <article class="proj-card" data-cat="amc">
+      <article class="proj-card" data-cat="ongoing">
         <div class="proj-media">
                     <img src="/assets/img/photos/site-engineer-drawing.webp" alt="An Augzet engineer on site checking the installation against the drawing set." width="1200" height="1600" loading="lazy" decoding="async">
         </div>
         <div class="proj-body">
-          <p class="proj-tag">Maintenance · Multi-Site AMC</p>
+          <p class="proj-tag">Ongoing · Multi-Site AMC</p>
           <h3>Annual Maintenance Portfolio</h3>
           <p>Scheduled testing, solar performance checks and priority breakdown response across residential and commercial systems we built, and some we didn't.</p>
           <div class="proj-stats">
@@ -168,12 +166,12 @@
         </div>
       </article>
 
-      <article class="proj-card" data-cat="solar">
+      <article class="proj-card" data-cat="completed">
         <div class="proj-media">
           <img src="/assets/img/photos/commercial-rooftop-array-1000.webp" alt="80 kWp on-grid commercial rooftop solar array, Ernakulam" width="1000" height="563" loading="lazy" decoding="async">
         </div>
         <div class="proj-body">
-          <p class="proj-tag">Solar EPC · Commercial</p>
+          <p class="proj-tag">Completed · Commercial</p>
           <h3>80 kWp On-Grid Plant, Sunny and Sunnys</h3>
           <p>An 80 kWp grid-connected plant for M/s. Sunny and Sunnys Business Ventures Pvt Ltd, Ernakulam: Renewsys modules with Growatt inverters, engineered around the site's daytime load.</p>
           <div class="proj-stats">
@@ -184,12 +182,12 @@
         </div>
       </article>
 
-      <article class="proj-card" data-cat="solar">
+      <article class="proj-card" data-cat="completed">
         <div class="proj-media">
           <img src="/assets/img/photos/villa-community-aerial-1000.webp" alt="Aerial view of a villa community with rooftop solar across the development" width="1000" height="750" loading="lazy" decoding="async">
         </div>
         <div class="proj-body">
-          <p class="proj-tag">Solar EPC · Villa Community</p>
+          <p class="proj-tag">Completed · Villa Community</p>
           <h3>Rooftop Plants Across a Villa Development</h3>
           <p>Individual rooftop plants across a gated villa community, each roof surveyed and simulated on its own orientation and shading, engineered to a single standard.</p>
           <div class="proj-stats">
@@ -200,12 +198,12 @@
         </div>
       </article>
 
-      <article class="proj-card" data-cat="solar">
+      <article class="proj-card" data-cat="completed">
         <div class="proj-media">
           <img src="/assets/img/photos/villa-rooftop-solar-1000.webp" alt="Rooftop solar array on a residential villa with a shingled roof" width="1000" height="563" loading="lazy" decoding="async">
         </div>
         <div class="proj-body">
-          <p class="proj-tag">Solar EPC · Subsidy Fast-Track</p>
+          <p class="proj-tag">Completed · Subsidy Fast-Track</p>
           <h3>Rooftop Plant with 40-Day MNRE Subsidy</h3>
           <p>Document, drawing, delivery, execution: the client's own words. Subsidy registered at commissioning and credited in 40 days.</p>
           <div class="proj-stats">
@@ -362,7 +360,7 @@
     function createCardElement(project) {
       const article = document.createElement("article");
       article.className = "proj-card";
-      article.setAttribute("data-cat", project.category || "solar");
+      article.setAttribute("data-cat", project.category || "completed");
 
       const mediaDiv = document.createElement("div");
       mediaDiv.className = "proj-media";
@@ -388,12 +386,10 @@
       const tagP = document.createElement("p");
       tagP.className = "proj-tag";
       const categoryNames = {
-        solar: "Solar EPC",
-        design: "Electrical Design",
-        automation: "Automation",
-        amc: "Maintenance"
+        completed: "Completed",
+        ongoing: "Ongoing"
       };
-      const categoryLabel = categoryNames[project.category] || project.category || "General";
+      const categoryLabel = categoryNames[project.category] || project.category || "Completed";
       tagP.textContent = `${categoryLabel} · ${project.priceDate || ""}`;
       bodyDiv.appendChild(tagP);
 

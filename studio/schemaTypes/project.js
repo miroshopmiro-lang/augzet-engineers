@@ -12,19 +12,18 @@ export default {
     },
     {
       name: 'category',
-      title: 'Category',
+      title: 'Status',
       type: 'string',
-      description: 'Select the capability this project falls under.',
+      description: 'Is this project finished, or still in progress?',
       options: {
         list: [
-          { title: 'Electrical Design', value: 'design' },
-          { title: 'Automation', value: 'automation' },
-          { title: 'Solar EPC', value: 'solar' },
-          { title: 'Maintenance (AMC)', value: 'amc' }
+          { title: 'Completed', value: 'completed' },
+          { title: 'Ongoing', value: 'ongoing' }
         ],
         layout: 'radio'
       },
-      validation: Rule => Rule.required().error('Category is required.')
+      initialValue: 'completed',
+      validation: Rule => Rule.required().error('Status is required.')
     },
     {
       name: 'priceDate',
@@ -103,14 +102,12 @@ export default {
     prepare(selection) {
       const { title, category, media, priceDate } = selection;
       const categoryMap = {
-        solar: 'Solar EPC',
-        design: 'Electrical Design',
-        automation: 'Automation',
-        amc: 'Maintenance'
+        completed: 'Completed',
+        ongoing: 'Ongoing'
       };
       return {
         title: title || 'Untitled Project',
-        subtitle: `${categoryMap[category] || category || 'No Category'} | ${priceDate || 'No Date'}`,
+        subtitle: `${categoryMap[category] || category || 'No Status'} | ${priceDate || 'No Date'}`,
         media: media
       };
     }
