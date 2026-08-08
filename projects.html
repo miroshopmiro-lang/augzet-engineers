@@ -82,6 +82,51 @@
   @media (prefers-reduced-motion: reduce) {
     .proj-media .proj-nav, .proj-dots button { transition: none; }
   }
+
+  /* Full-size photo viewer. The card crops to 16/10, so detail work — panel
+     wiring, terminations — is only really legible here. */
+  .proj-expand {
+    position: absolute; inset: 0; z-index: 1;
+    border: 0; padding: 0; background: transparent; cursor: zoom-in;
+  }
+  .proj-expand:focus-visible { outline: 2px solid #F0941D; outline-offset: -3px; }
+  .proj-media .proj-nav, .proj-dots { z-index: 2; }
+
+  dialog.lb {
+    padding: 0; border: 0; max-width: 100vw; max-height: 100vh;
+    width: 100%; height: 100%; background: transparent; overflow: hidden;
+  }
+  dialog.lb::backdrop { background: rgba(10, 14, 18, .93); }
+  .lb-stage { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .lb-stage img {
+    max-width: min(1400px, 92vw); max-height: 84vh;
+    object-fit: contain; display: block; background: #0E151C;
+  }
+  .lb button {
+    position: absolute; border: 0; cursor: pointer; color: #fff;
+    background: rgba(255, 255, 255, .10); font-family: inherit; line-height: 1;
+    transition: background .18s ease;
+  }
+  .lb button:hover { background: rgba(255, 255, 255, .22); }
+  .lb button:focus-visible { outline: 2px solid #F0941D; outline-offset: 2px; }
+  .lb-close { top: 18px; right: 18px; width: 44px; height: 44px; font-size: 26px; }
+  .lb-nav { top: 50%; transform: translateY(-50%); width: 52px; height: 68px; font-size: 34px; }
+  .lb-prev { left: 18px; } .lb-next { right: 18px; }
+  .lb-count {
+    position: absolute; bottom: 22px; left: 0; right: 0; text-align: center;
+    color: #fff; font-family: var(--font-label, inherit); font-size: 12px;
+    letter-spacing: .18em; text-transform: uppercase; margin: 0;
+  }
+  .lb-cap {
+    position: absolute; top: 22px; left: 0; right: 90px; text-align: center;
+    color: rgba(255,255,255,.82); font-size: 13px; margin: 0; padding: 0 18px;
+  }
+  @media (max-width: 640px) {
+    .lb-nav { width: 42px; height: 56px; font-size: 26px; }
+    .lb-prev { left: 6px; } .lb-next { right: 6px; }
+    .lb-cap { right: 70px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .lb button { transition: none; } }
 </style>
 <link rel="icon" type="image/png" href="/assets/img/favicon.png">
 <script type="application/ld+json">
@@ -397,6 +442,85 @@
       `).join("");
     }
 
+    // Full-size photo viewer. The card crops hard to 16/10, so the detail that
+    // actually demonstrates the work — terminations, panel layout — is only
+    // legible at full size. Built once and reused by every card.
+    let lb = null, lbShots = [], lbIndex = 0;
+
+    function ensureLightbox() {
+      if (lb) return lb;
+      lb = document.createElement("dialog");
+      lb.className = "lb";
+
+      const stage = document.createElement("div");
+      stage.className = "lb-stage";
+      const img = document.createElement("img");
+      img.alt = "";
+      stage.appendChild(img);
+
+      const cap = document.createElement("p");
+      cap.className = "lb-cap";
+      const count = document.createElement("p");
+      count.className = "lb-count";
+      count.setAttribute("aria-live", "polite");
+
+      const mkBtn = (cls, label, glyph, fn) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = cls;
+        b.setAttribute("aria-label", label);
+        b.textContent = glyph;
+        b.addEventListener("click", fn);
+        return b;
+      };
+
+      lb.appendChild(stage);
+      lb.appendChild(cap);
+      lb.appendChild(mkBtn("lb-close", "Close", "×", () => lb.close()));
+      lb.appendChild(mkBtn("lb-nav lb-prev", "Previous photo", "‹", () => lbStep(-1)));
+      lb.appendChild(mkBtn("lb-nav lb-next", "Next photo", "›", () => lbStep(1)));
+      lb.appendChild(count);
+
+      // Clicking the backdrop (but not the image) closes.
+      lb.addEventListener("click", (e) => { if (e.target === lb || e.target === stage) lb.close(); });
+      lb.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") { e.preventDefault(); lbStep(1); }
+        if (e.key === "ArrowLeft") { e.preventDefault(); lbStep(-1); }
+      });
+
+      document.body.appendChild(lb);
+      return lb;
+    }
+
+    function lbRender() {
+      const img = lb.querySelector(".lb-stage img");
+      const count = lb.querySelector(".lb-count");
+      img.src = lbShots[lbIndex];
+      img.alt = lb.dataset.title
+        ? `${lb.dataset.title} — photo ${lbIndex + 1} of ${lbShots.length}`
+        : `Photo ${lbIndex + 1} of ${lbShots.length}`;
+      count.textContent = lbShots.length > 1 ? `${lbIndex + 1} / ${lbShots.length}` : "";
+      const single = lbShots.length < 2;
+      lb.querySelector(".lb-prev").hidden = single;
+      lb.querySelector(".lb-next").hidden = single;
+    }
+
+    function lbStep(dir) {
+      if (lbShots.length < 2) return;
+      lbIndex = (lbIndex + dir + lbShots.length) % lbShots.length;
+      lbRender();
+    }
+
+    function openLightbox(shots, index, title) {
+      ensureLightbox();
+      lbShots = shots;
+      lbIndex = index || 0;
+      lb.dataset.title = title || "";
+      lb.querySelector(".lb-cap").textContent = title || "";
+      lbRender();
+      lb.showModal();   // native Esc handling and focus trapping
+    }
+
     // Paging controls for cards that carry more than one photo. Images are all
     // in the DOM already; this only toggles which one is visible, so there is
     // no layout shift and no second fetch when paging.
@@ -465,6 +589,20 @@
           if (i > 0) img.hidden = true;
           mediaDiv.appendChild(img);
         });
+        // Every card gets a zoom affordance, single-photo ones included.
+        const expand = document.createElement("button");
+        expand.type = "button";
+        expand.className = "proj-expand";
+        expand.setAttribute("aria-label",
+          shots.length > 1
+            ? `View ${shots.length} photos of ${project.title} full size`
+            : `View photo of ${project.title} full size`);
+        expand.addEventListener("click", () => {
+          const shown = [...mediaDiv.querySelectorAll("img")].findIndex(im => !im.hidden);
+          openLightbox(shots, shown < 0 ? 0 : shown, project.title);
+        });
+        mediaDiv.appendChild(expand);
+
         if (shots.length > 1) buildGallery(mediaDiv, shots.length);
       } else {
         mediaDiv.innerHTML = `
