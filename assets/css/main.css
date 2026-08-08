@@ -354,7 +354,7 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 .vrule--red::before { background: var(--red); }
 /* Quanta signature: headline indented one step right of its chip */
 @media (min-width: 721px) {
-  .cap2-left h2, .vrule .section-head h2 { margin-left: clamp(1.5rem, 5vw, 4.5rem); }
+  .cap2-left h2 { margin-left: clamp(1.5rem, 5vw, 4.5rem); }
   .cap2-left .link-arrow, .cap2-left .cap2-note, .cap2-left .btn-bar { margin-left: clamp(1.5rem, 5vw, 4.5rem); }
 }
 
