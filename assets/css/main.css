@@ -844,7 +844,7 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.15));
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.72) 55%, rgba(0,0,0,0.45) 100%);
 }
 .cap-inner {
   position: absolute;
@@ -858,19 +858,20 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 }
 .cap-index {
   font-family: var(--font-label);
-  font-size: 13px;
+  font-size: clamp(11px, 2.8vw, 13px);
   font-weight: 600;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.18em;
   color: var(--gold);
   text-transform: uppercase;
 }
-.cap-bottom h3 { margin-bottom: 10px; max-width: 14ch; color: var(--white) !important; font-size: clamp(1.45rem, 2.1vw, 2.1rem); }
+.cap-bottom h3 { margin-bottom: 10px; max-width: min(28ch, 100%); color: var(--white) !important; font-size: clamp(1.35rem, 2.4vw, 2.1rem); line-height: 1.2; }
 .cap-bottom .cap-desc {
   font-size: 14px;
-  line-height: 1.7;
-  color: #C9C4C2;
-  max-width: 34ch;
+  line-height: 1.65;
+  color: #E2DDDC;
+  max-width: 44ch;
   margin-bottom: 14px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.85);
 }
 .cap-link {
   display: inline-flex;
@@ -1613,6 +1614,8 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 }
 @media (max-width: 720px) {
   :root { --header-h: 74px; --header-h-scrolled: 60px; }
+  .cap-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .cap-panel { min-height: 380px; }
   .stats-grid { grid-template-columns: 1fr; }
   .stat-cell { min-height: 26svh; display: flex; flex-direction: column; justify-content: center; }
   .stat-num { font-size: clamp(3rem, 13vw, 4.4rem); }
@@ -1906,13 +1909,14 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
    ad rather than an integration argument. */
 .gap-strip {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(0.8rem, 1.6vw, 1.4rem);
-  margin-top: clamp(2.5rem, 5vw, 4rem);
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1.2rem, 2.4vw, 2.5rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  width: 100%;
 }
 .gap-tile {
   position: relative;
-  aspect-ratio: 4 / 3;
+  height: clamp(260px, 26vh, 360px);
   overflow: hidden;
   background: var(--charcoal-2);
   border-bottom: 3px solid var(--gold);
