@@ -49,7 +49,7 @@ Click **Projects** and you see the list of every project currently on your websi
 
 Click **Projects**, then the **+** (new document) button at the top of the list.
 
-You get a form with six things to fill in. Fill them all — the panel will not let you publish until every required field is complete, and it will tell you exactly which one is missing.
+You get a form with a handful of fields. Fill in every one that is not marked *optional* — the panel will not let you publish until each required field is complete, and it will tell you exactly which one is missing.
 
 ### Project Title
 The name of the job, as you would say it to a customer.
@@ -59,6 +59,27 @@ The name of the job, as you would say it to a customer.
 Include the location. It is the single most useful thing to a visitor deciding whether you work in their area.
 
 **Rule: between 5 and 80 characters.** If you type a title that is too long the panel will show a red warning and refuse to publish. Shorten it and the warning disappears.
+
+### Pin to Top
+
+**Leave this empty almost every time.** An empty box is the normal state, and a project with nothing in it behaves exactly as before — it sits with the rest, newest at the top.
+
+Use it when you want a particular job to be the first thing a visitor sees. Type a number:
+
+| You type | Where it shows |
+|---|---|
+| `1` | First on the page |
+| `2` | Second |
+| `3` | Third |
+| *(empty)* | In the normal list below the pinned ones, newest first |
+
+So if you want the Kakkanad substation job first and the villa community second, put `1` on one and `2` on the other. Everything else carries on underneath, untouched.
+
+**To unpin,** clear the box and publish. The project drops straight back into its normal place by date — nothing is lost.
+
+**Pin two or three, not ten.** Pinning everything is identical to pinning nothing, and it quietly buries whatever you actually wanted seen. Treat these as the shop window.
+
+**If two projects share the same number,** the newer one wins. Nothing breaks, but it is worth keeping the numbers distinct so the order is yours rather than the system's.
 
 ### Status
 Two round buttons — pick one:
@@ -155,7 +176,7 @@ Both are under the **⋮** menu next to the Publish button.
 
 The consequence: **if you delete all your real projects, the old example cards reappear.** That is not a fault — it is the safety net doing its job. Add one real project back and it takes over again.
 
-**Newest first.** Projects appear in the order they were created, most recent at the top. There is no drag-to-reorder. If you want a particular job showing first, the practical trick is to delete and re-add it, which makes it the newest.
+**Newest first, unless you pin.** By default projects appear in the order they were created, most recent at the top. To override that for a particular job, use the **Pin to Top** field — see §3. Never delete and re-add a project just to move it up; pinning does the same thing without losing the entry.
 
 **Only the Projects page is connected to the panel.** The homepage, services pages, about page and contact details are built into the site. To change those, message Apollosystems — they are quick changes, they are just not self-service.
 

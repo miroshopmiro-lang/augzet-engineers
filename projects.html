@@ -396,7 +396,11 @@
     // Replace with your actual Sanity Project ID after deploying your studio
     const PROJECT_ID = "uhhnpy9s"; 
     const DATASET = "production";
-    const QUERY = encodeURIComponent(`*[_type == "project"] | order(_createdAt desc) {
+    // Pinned projects first, in the order the client numbered them, then
+    // everything else newest-first as before. coalesce() is load-bearing:
+    // unpinned projects have no pinPosition at all, and GROQ sorts nulls to the
+    // TOP on an ascending sort, which would invert the whole thing.
+    const QUERY = encodeURIComponent(`*[_type == "project"] | order(coalesce(pinPosition, 999999) asc, _createdAt desc) {
       _id,
       title,
       category,

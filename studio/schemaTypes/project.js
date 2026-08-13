@@ -11,6 +11,13 @@ export default {
       validation: Rule => Rule.required().min(5).max(80).error('Title must be between 5 and 80 characters.')
     },
     {
+      name: 'pinPosition',
+      title: 'Pin to Top (optional)',
+      type: 'number',
+      description: 'Leave empty for normal projects — they show newest first. To feature a project, type a number: 1 shows first, 2 second, 3 third. Only fill this in on your best few jobs.',
+      validation: Rule => Rule.min(1).integer().warning('Use a whole number, 1 or higher.')
+    },
+    {
       name: 'category',
       title: 'Status',
       type: 'string',
@@ -108,22 +115,36 @@ export default {
       ]
     }
   ],
+  // Sort the studio list the same way the website sorts, so the client can see
+  // the real running order without leaving the panel.
+  orderings: [
+    {
+      title: 'Website order (pinned first)',
+      name: 'websiteOrder',
+      by: [
+        { field: 'pinPosition', direction: 'asc' },
+        { field: '_createdAt', direction: 'desc' }
+      ]
+    }
+  ],
   preview: {
     select: {
       title: 'title',
       category: 'category',
       media: 'image',
-      priceDate: 'priceDate'
+      priceDate: 'priceDate',
+      pinPosition: 'pinPosition'
     },
     prepare(selection) {
-      const { title, category, media, priceDate } = selection;
+      const { title, category, media, priceDate, pinPosition } = selection;
       const categoryMap = {
         completed: 'Completed',
         ongoing: 'Ongoing'
       };
+      const details = `${categoryMap[category] || category || 'No Status'} | ${priceDate || 'No Date'}`;
       return {
         title: title || 'Untitled Project',
-        subtitle: `${categoryMap[category] || category || 'No Status'} | ${priceDate || 'No Date'}`,
+        subtitle: pinPosition ? `📌 ${pinPosition} · ${details}` : details,
         media: media
       };
     }
