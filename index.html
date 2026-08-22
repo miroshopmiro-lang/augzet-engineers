@@ -195,8 +195,50 @@
   <div class="hero-scrim"></div>
 
   <div class="hero-content">
-    <h1>ENGINEERING FIRST,<br><span class="accent">ENERGY ALWAYS</span></h1>
-    <p class="hero-sub">Electrical engineers in Ernakulam, Kerala.</p>
+    <!-- [CONFIRM] Hero copy, revision 3, 2026-08-20. Not yet approved.
+         Original client line was "ENGINEERING FIRST, ENERGY ALWAYS" /
+         "Electrical engineers in Ernakulam, Kerala." Restore that if no
+         revision is picked.
+
+         REVISION 1 (withdrawn) was "YOUR ELECTRICIAN AND YOUR SOLAR
+         INSTALLER HAVE NEVER MET", built on the premise that buyers feel
+         uncoordinated electrical/solar vendors as a pain point. Two
+         independent research passes both found that premise WEAK: one
+         ranked it 6th of 7 pain points, and noted most residential solar
+         is retrofitted onto houses wired years earlier, so the "two
+         vendors" framing does not describe the buyer's situation.
+
+         REVISION 2 (withdrawn) was "DOCUMENTED BEFORE IT'S BUILT. /
+         SERVICED BY THE PEOPLE WHO BUILT IT." with a Reddit-labelled
+         evidence base that was later found to be fabricated (invented
+         authors, quotes attributed to posts with [removed] bodies). See
+         G:\Agency\research\augzet-copy-validation\reddit-v2\FINDINGS-VERIFIED.md
+         for the honest replacement, built by reading the raw JSON
+         captures directly (those raw captures were genuine; only the
+         analysis layer on top of them was not).
+
+         REVISION 3 (installed) keeps rev 2's headline shape, changed
+         "people" to "engineers", and adds an eyebrow naming the trade
+         and town so a Google-Maps visitor confirms fit in one glance.
+         Every claim traces to something already published on this site
+         or to Augzet's own Google reviews, independently corroborated by
+         the verified Kerala Reddit data:
+           - "no hidden charges" is verbatim from Vinson Antony's Google
+             review, and is also question 2 of 6 a real Kerala buyer
+             asked before considering solar (post 149xty0, 44pts/48
+             comments): "Are there hidden charges involved?"
+           - "documented before it's built" comes from the existing
+             capabilities copy (load studies, single-line diagrams) and
+             from Nijo Josseph's Google review (document, drawing,
+             delivery, execution).
+           - "serviced by the engineers who built it" comes from the
+             existing AMC copy, and answers a real complaint (post
+             1kl0r71): an electrician adjusted the wiring, "fine for a
+             couple of days, but the issue is back again."
+         Nothing here is a new claim. -->
+    <span class="chip" data-reveal>Licensed Electrical Engineers · Ernakulam</span>
+    <h1>DOCUMENTED BEFORE IT'S BUILT.<br><span class="accent">SERVICED BY THE ENGINEERS WHO BUILT IT.</span></h1>
+    <p class="hero-sub">Electrical design, solar power, home automation and maintenance in Ernakulam. Load studies and drawings before installation, quoted up front with no hidden charges.</p>
     <div class="hero-ctas">
       <a href="/contact.html" class="btn-bar btn-bar--red"><span class="bar-label">Get a Free Quote</span><span class="arrow-box">→</span></a>
       <a href="tel:04842684066" class="btn-bar"><span class="bar-label">Call 0484-2684066</span><span class="arrow-box">→</span></a>
@@ -224,6 +266,41 @@
 </div>
 
 <!-- ================= CAPABILITIES (Quanta pattern) ================= -->
+<!-- NEW 2026-08-19 — conversion pass, not yet approved by client.
+     Names the buyer's actual situation before the capability list.
+     Nothing here is invented: the split-trade framing is the client's
+     own July 2026 correction ("one of our services is solar, the core
+     is electrical"), restated from the buyer's side instead of the
+     company's.
+
+     [LAYOUT FIX 2026-08-19] Original version wrapped this copy alone in
+     .section-head (max-width 880px) inside a 1440px .container with no
+     sibling content — left ~560px of dead space on desktop. Restructured
+     into the existing .case-row/.case-media/.case-text component (same
+     one about.html's founder spotlight uses, main.css:934) instead of
+     inventing new layout. join-meter-panel.webp already exists in the
+     asset library for exactly this idea — the physical point where a
+     building's electrical panel and a solar system connect.
+
+     [CONFIRM] Headline/eyebrow copy below is still pending validation —
+     see G:\Agency\research\augzet-copy-validation\SYNTHESIS.md once
+     research lands. This edit only fixes layout, not copy. -->
+<section class="section section--concrete2" id="the-gap">
+  <div class="container">
+    <div class="case-row case-row--flip">
+      <div class="case-media">
+        <img src="/assets/img/photos/join-meter-panel.webp" alt="The point where a building's electrical panel and solar system connect." width="900" height="1124" loading="lazy" decoding="async">
+      </div>
+      <div class="case-text" data-reveal>
+        <span class="chip" data-reveal>What Usually Goes Wrong</span>
+        <h2 data-reveal>Most of what goes wrong was <span class="t-gold">never written down</span> in the first place.</h2>
+        <p class="lede" data-reveal>A verbal estimate, no drawings, no itemised scope. Then the bill moves, the work is hard to check, and the person who did it is difficult to reach once they have been paid. When a fault turns up two years later, there is no record of how anything was wired.</p>
+        <p class="lede" data-reveal>Augzet works the other way round. Load studies and single-line diagrams are drawn and shared before anything is installed, the quote is itemised up front, and the same licensed engineers who designed the system come back to service it under an AMC.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="section section--dark vrule" id="capabilities">
   <div class="container cap2-grid">
     <div class="cap2-left">
@@ -255,9 +332,38 @@
 <section class="section section--concrete vrule vrule--red" id="integration">
   <div class="container">
     <div class="section-head">
-      <span class="chip chip--red" data-reveal>Our Mission</span>
+      <!-- [CONFIRM] Rewritten 2026-08-20, not yet approved. Original
+           text ("Technology moves fast, and the trade has split with
+           it...") is preserved below in a comment — it's a genuine
+           argument, just aimed at peer engineering firms rather than at
+           the customer's actual choice.
+
+           A first rewrite (2026-08-19, also withdrawn) pointed the
+           argument at a split-vendor premise: "an electrician for the
+           wiring, a solar vendor for the panels... nothing falls into
+           the gap between two contractors." Two independent research
+           passes ranked that premise weak, and the verified Kerala
+           Reddit data (FINDINGS-VERIFIED.md) does not support it either
+           — most residential solar is retrofitted onto existing wiring,
+           so buyers don't experience the problem as vendor coordination.
+
+           This version keeps the client's own transcribed mission claim
+           (integrating new solar into the electrical system that's
+           already there, handed over as one solution) but drops the
+           buyer-facing "two contractors" framing entirely, replacing it
+           with the actual join point: new solar technology has to
+           connect to wiring that's already in the building, and that
+           connection is where problems start.
+           Original: "Technology moves fast, and the trade has split
+           with it. The firms doing advanced electrical work aren't
+           focused on solar, and the solar firms aren't electrical
+           engineers. Augzet exists to close that gap: when new solar
+           technology arrives, we integrate it into the electrical
+           system that is already there and hand the result over as one
+           solution." -->
+      <span class="chip chip--red" data-reveal>The Real Choice</span>
       <h2 data-reveal>Advanced electrical. Advanced solar. <span class="t-gold">One system.</span></h2>
-      <p class="lede" data-reveal>Technology moves fast, and the trade has split with it. The firms doing advanced electrical work aren't focused on solar, and the solar firms aren't electrical engineers. Augzet exists to close that gap: when new solar technology arrives, we integrate it into the electrical system that is already there and hand the result over as one solution.</p>
+      <p class="lede" data-reveal>Solar technology moves faster than the wiring it connects to. New panels, hybrid inverters and battery systems have to be joined to an electrical installation that is already in the building, and that join is where the problems start. Augzet designs both sides of it. The same licensed engineers who draw the load study and single-line diagram install the system and come back to maintain it.</p>
     </div>
 
     <div class="gap-strip">
@@ -280,6 +386,45 @@
       <li>Tier 1 Products</li>
       <li>Skilled in Integrating Advanced Technologies</li>
     </ul>
+  </div>
+</section>
+
+<!-- NEW 2026-08-19 — conversion pass, not yet approved by client.
+     Nothing above the site addresses cost directly; a buyer about to
+     spend lakhs has no answer to "is this worth it?" until now. Every
+     line below is sourced to something already on this page — two are
+     quoted verbatim from the Google reviews already in the #reviews
+     rail further down, so no new claim is introduced, only surfaced
+     earlier and named explicitly. Reuses the why-grid/why-cell
+     component already built for about.html — no new CSS. -->
+<section class="section section--concrete2" id="value">
+  <div class="container">
+    <div class="section-head">
+      <span class="chip" data-reveal>What You're Paying For</span>
+      <h2 data-reveal>Every rupee, <span class="t-gold">accounted for.</span></h2>
+    </div>
+    <div class="why-grid" data-reveal-group>
+      <div class="why-cell">
+        <span class="why-no">01</span>
+        <h3>A licensed engineering team, not a subcontractor chain</h3>
+        <p>Febin Thomas holds the Kerala State Electricity Licensing Board Supervisor License. All three founders hold a B.Tech in Electrical and Electronics.</p>
+      </div>
+      <div class="why-cell">
+        <span class="why-no">02</span>
+        <h3>Documented before it's built</h3>
+        <p>Load studies and single-line diagrams are drawn and shared before anything is installed. Not a walk-around estimate.</p>
+      </div>
+      <div class="why-cell">
+        <span class="why-no">03</span>
+        <h3>No hidden charges</h3>
+        <p>&ldquo;Excellent team, no hidden charges, super support, well planned and organized. Execution within the time frame for my 5&nbsp;kW unit.&rdquo; <strong>Vinson Antony, Google review</strong></p>
+      </div>
+      <div class="why-cell">
+        <span class="why-no">04</span>
+        <h3>The subsidy actually gets handled</h3>
+        <p>&ldquo;Document, drawing, delivery, execution and final handing over of the plant shows the professional touch. Received MNRE subsidy in 40&nbsp;days.&rdquo; <strong>Nijo Josseph, Google review</strong></p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -441,6 +586,39 @@
   </div>
 </section>
 
+<!-- NEW 2026-08-19 — conversion pass, not yet approved by client.
+     ONE case study, deliberately. projects.html currently carries six
+     cards; only this one (M/s. Sunny and Sunnys) is a real, named job
+     with named hardware. The other five are the site's own labelled
+     "representative profiles" with invented specifics (see
+     AUDIT-2026-08-07.md §7.3) — pulling any of those onto the homepage
+     as proof would import the exact credibility problem this pass is
+     meant to fix. Reuses the case-row/case-media/case-text/case-meta
+     component already built for about.html — no new CSS. Copy and
+     image are copied verbatim from projects.html. -->
+<section class="section" id="proof">
+  <div class="container">
+    <div class="case-row">
+      <div class="case-media">
+        <img src="/assets/img/photos/commercial-rooftop-array-1000.webp" alt="80 kWp on-grid commercial rooftop solar array, Ernakulam" width="1000" height="563" loading="lazy" decoding="async">
+      </div>
+      <div class="case-text" data-reveal data-reveal-delay="0.1">
+        <span class="chip" data-reveal>From Our Delivery Record</span>
+        <dl class="case-meta">
+          <dt>Client</dt><dd>M/s. Sunny and Sunnys Business Ventures Pvt Ltd</dd>
+          <dt>Capacity</dt><dd>80 kWp</dd>
+          <dt>Type</dt><dd>On-grid</dd>
+          <dt>Modules</dt><dd>Renewsys</dd>
+          <dt>Inverters</dt><dd>Growatt</dd>
+        </dl>
+        <h3>80 kWp On-Grid Plant, Sunny and Sunnys</h3>
+        <p>An 80 kWp grid-connected plant for M/s. Sunny and Sunnys Business Ventures Pvt Ltd, Ernakulam: Renewsys modules with Growatt inverters, engineered around the site's daytime load.</p>
+        <a class="link-arrow" href="/projects.html" data-reveal>See more completed work <span class="arrow-box">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= PRE-FOOTER CTA (Quanta pattern: centered, topo) ================= -->
 <section class="cta-band" id="get-started">
   <div class="container">
@@ -486,6 +664,8 @@
           <li><a href="/projects.html">Projects</a></li>
           <li><a href="/contact.html">Contact</a></li>
           <li><a href="/contact.html">Get a Quote</a></li>
+          <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Use</a></li>
         </ul>
       </div>
       <div class="footer-col">
