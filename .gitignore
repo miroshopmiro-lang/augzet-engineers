@@ -34,3 +34,18 @@ assets/img/*.src.mp4
 # admin/static/, which is the studio's own deployed bundle. Un-anchoring this
 # silently strips the studio's JavaScript from the deploy and the CMS goes blank.
 /static/
+
+# Internal working docs, reviews & scrapers
+Augzet-Website-Review-2026-08-20.pdf
+CRO-2026-08-19.md
+CRO-screens/
+HANDOFF.md
+_backups/
+_delegated/
+_superseded/
+augzet-review-pdf.py
+enphase/
+projects.html.bak-20260808
+studio/schemaTypes/project.js.bak-20260808
+video-recut/
+assets/img/unnamed.png

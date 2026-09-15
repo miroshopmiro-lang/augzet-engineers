@@ -1,12 +1,15 @@
 /* ============================================================
    AUGZET ENGINEERS — Design System v2
-   Rebuilt on the verified Quanta Services DNA:
-   alternate-gothic-extra-cond → Bebas Neue (+ Oswald labels)
-   proxima-nova → Montserrat
-   Palette lifted from quantaservices.com CSS custom props
+   Fonts: Oxygen (display/label) + Lato (body) — matches augzet.com's
+   live Astra theme stack. The type scale below was originally authored
+   for a condensed display face; it was retuned for Oxygen on 2026-08-07
+   (see the h1/h2/h3 text-transform comment further down).
+   Palette is an industrial-energy reference scheme, not the client's
+   brand tokens (augzet.com's actual brand colors are #e40000 / #202714 /
+   #f9f9f4) — kept as a deliberate design choice, not a client-brand port.
    ============================================================ */
 
-/* ---------- Tokens (Quanta ground truth) ---------- */
+/* ---------- Tokens ---------- */
 :root {
   --charcoal:     #221F1F;  /* gray-1000 — primary dark ground (warm) */
   --charcoal-2:   #1A1717;  /* gray-800 — deeper dark / panels */
@@ -565,6 +568,10 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   color: var(--white);
   padding-inline: var(--container-pad);
 }
+/* Sitewide .chip has a 1.8rem bottom margin sized for a section chip
+   sitting above a full-size section heading; tightened here for the
+   hero specifically, to match the calmer overall scale below. */
+.hero-content .chip { margin-bottom: 1.1rem; }
 .hero-content h1 {
   /* The homepage hero is the one place on the site that earns the largest
      type: full-bleed video behind it, three short hard-broken lines, no
@@ -579,14 +586,74 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
      client's "fonts look zoomed in" report. Sentence case lets the line
      sit larger and still read faster.
      max-width uses min() so the ch cap can never exceed the column on a
-     narrow phone. */
-  font-size: clamp(2.35rem, 4.6vw, 4.4rem);
+     narrow phone.
+
+     Font-size and max-width tuned for the original 32-character client
+     line ("ENGINEERING FIRST, ENERGY ALWAYS") at 4.4rem/20ch. The
+     conversion-pass headline is nearly twice as long (55-60 characters),
+     and an earlier pass just widened the column to fit more of that
+     length per line at the old large size -- which kept the block
+     reading as big and dense even once the wrap was fixed. Turned down
+     directly instead: 2.6rem ceiling, not 3.5rem, so a longer headline
+     at a calmer size ends up close to the same overall footprint the
+     shorter original held, rather than compounding "more words" with
+     "still very large text". */
+  /* RAISED to a 3.6rem ceiling, 2026-09-13. Client feedback: the block
+     read as "cramped in the centre" on a real desktop viewport -- checked
+     live at 1440px and the 2.6rem cap was the cause, not the wrap. A
+     single ~29-45 character line at 2.6rem occupies a small island in
+     the middle of a 100svh full-bleed video with nothing else on the
+     page, so "calm" had tipped into "lost", not "clear".
+     TURNED DOWN to 3.0rem, same day -- 3.6rem overcorrected, headline
+     felt too dominant. 3.0rem still clears the "lost" problem without
+     tipping into shouting for space.
+     RAISED AGAIN to 4.2rem, same day, alongside the revision-5 copy cut
+     (19 words -> 9 words). Matched against a client-supplied screenshot
+     of the actual Hyros hero: their headline is ~9 words, large bold
+     type, wrapped to two short lines, contained to roughly a third of
+     viewport width rather than stretched wide. A 9-word line can carry
+     4.2rem without the "shouting for space" problem 3.6rem had at
+     19 words -- it's the word count driving size now, not size alone. */
+  font-size: clamp(1.9rem, 4.4vw, 4.2rem);
   margin-inline: auto;
-  max-width: min(20ch, 100%);
+  max-width: min(22ch, 100%);
   text-transform: none;
   letter-spacing: -0.005em;
-  line-height: 1.06;
+  line-height: 1.12;
   text-shadow: 0 2px 30px rgba(0,0,0,0.55);
+}
+/* At 30ch the second line of the revision-3 headline ("SERVICED BY THE
+   ENGINEERS WHO BUILT IT.", 39 characters) breaks after "WHO", leaving
+   "BUILT IT." stranded alone as a third line. On a wide desktop viewport
+   there's plenty of horizontal room for the whole line to sit on one
+   row, so the 3-line wrap wasn't a space constraint, it was this cap
+   being tuned for mobile widths. Loosened to 44ch from 1000px up so
+   both lines fit on their own row (line 1 is already 29ch and unaffected)
+   without touching mobile, where the tighter cap is still correct. */
+@media (min-width: 1000px) {
+  /* Revision-5 headline (9 words, 22ch cap) is short enough that it no
+     longer needs widening on desktop -- 22ch already wraps it to two
+     even, contained lines the way the Hyros reference does. Left as its
+     own rule (rather than deleted) in case a future headline needs the
+     desktop-only widening again. */
+  .hero-content h1 { max-width: min(30ch, 100%); }
+}
+/* The hero eyebrow ("Licensed Electrical Engineers · Ernakulam", 41
+   characters) is by far the longest chip text on the site -- every
+   other chip is a 2-4 word section label. At the base .chip size it
+   wraps to 2 lines on phones, costing ~60px of vertical space for what
+   should be a quiet whisper above the headline, not competing with it
+   for room. Scoped to the hero specifically so every other chip on the
+   site keeps its current size. Paired with trimmed margins on the two
+   busiest gaps below (CTAs, proof line) to recover a bit more breathing
+   room around the whole block without shrinking the headline itself. */
+@media (max-width: 720px) {
+  .hero-content .chip {
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    padding: 6px 12px 7px;
+    margin-bottom: 1rem;
+  }
 }
 .hero-content h1 .accent {
   color: var(--gold);
@@ -595,6 +662,29 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   -webkit-background-clip: text;
   background-clip: text;
 }
+/* ---- Hero guarantee line ----
+   Added 2026-09-13 (revision 5). Matches the role of "Or you don't pay."
+   in the Hyros reference screenshot: a short, separate, bolder line
+   directly under the headline that states the differentiator/guarantee
+   on its own, instead of folding it into the h1 as one long sentence. */
+.hero-guarantee {
+  /* Margin-top widened from 0.6rem, 2026-09-13, alongside the headline's
+     switch to Title Case -- capitalised words read visually denser/taller
+     than sentence case, so the guarantee line needed more breathing room
+     to stop feeling crowded under it. */
+  margin: 1.2rem auto 0;
+  max-width: min(34ch, 100%);
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--white);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-shadow: 0 1px 20px rgba(0,0,0,0.5);
+}
 /* ---- Hero subhead ----
    This is the only place on the page that says what the business does,
    and it was set in the least readable style available: 13.6px uppercase
@@ -602,10 +692,13 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
    capitals over bright footage. Now sentence case at a real reading size
    with normal tracking. min() again so the ch cap can't beat the column. */
 .hero-sub {
-  margin: 1.4rem auto 0;
-  max-width: min(52ch, 100%);
+  margin: 1.1rem auto 0;
+  max-width: min(54ch, 100%);
   font-family: var(--font-body);
-  font-size: clamp(1rem, 1.25vw, 1.15rem);
+  /* Raised alongside the 2026-09-13 headline fix -- at 0.98rem max it was
+     nearly invisible next to the new 3.6rem h1, widening the size gap
+     that made the whole block read as small and cramped. */
+  font-size: clamp(0.95rem, 1.1vw, 1.08rem);
   font-weight: 400;
   line-height: 1.6;
   letter-spacing: 0;
@@ -619,7 +712,7 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
    rating) and its statutory credential above the fold. Previously the
    reviews first appeared at section 11 of 13, roughly 85% scroll depth. */
 .hero-proof {
-  margin: 1.8rem auto 0;
+  margin: 1.2rem auto 0;
   max-width: min(80ch, 100%);
   font-family: var(--font-label);
   font-size: 12.5px;
@@ -648,12 +741,19 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 }
 .hero-stars { color: var(--gold); letter-spacing: 0.18em; font-size: 13px; }
 .hero-ctas {
-  margin-top: 2.6rem;
+  margin-top: 1.8rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 14px;
 }
+/* Buttons here use the sitewide .btn-bar component, which is correctly
+   sized everywhere else -- shrunk only inside the hero, where a calmer
+   overall scale calls for a calmer button to match, not the same size
+   that suited the old, much larger headline it used to sit under. */
+.hero-ctas .btn-bar { font-size: 12px; }
+.hero-ctas .btn-bar .bar-label { padding: 11px 20px; }
+.hero-ctas .btn-bar .arrow-box { padding: 0 12px; font-size: 14px; }
 /* ---------- Hero buffering indicator ----------
    Bottom-right rather than centred: centred would sit on top of the H1,
    and the poster image means the hero is never actually blank, so this
@@ -709,6 +809,20 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   height: 44px;
   background: linear-gradient(to bottom, var(--gold), transparent);
   animation: cue-drop 2.2s var(--ease-heavy) infinite;
+}
+/* The cue is bottom-anchored to .hero independent of content height,
+   while .hero-proof sits in the vertically-centered flow above it --
+   two elements with no relationship to each other's position. On a
+   phone there's only ever ~60-65px of clear hero left below the proof
+   line before the hero ends at the fixed action bar, but the full-size
+   cue (text + gap + 44px line) needs 74px, so the two collide and the
+   rating line and "SCROLL" render on top of each other. Shrinking the
+   cue's own footprint on mobile is what actually fixes it -- moving the
+   cue itself can't work here, there's no spare vertical room to move it
+   into. */
+@media (max-width: 720px) {
+  .scroll-cue { bottom: 16px; gap: 5px; }
+  .scroll-cue::after { height: 16px; }
 }
 @keyframes cue-drop {
   0% { transform: scaleY(0); transform-origin: top; }
@@ -953,9 +1067,35 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 .section--dark .case-meta { border-color: rgba(255,255,255,0.12); }
 .case-meta dt { color: var(--gray-500); font-weight: 400; }
 .case-meta dd { font-weight: 600; }
+.case-text h2 { margin-bottom: 1.2rem; }
 .case-text h3 { margin-bottom: 1rem; }
 .case-text p { }
 .case-cta { margin-top: 2rem; }
+/* ---- #the-gap heading colour override, 2026-09-13 ----
+   Every light-section h2 sitewide is red by design (see the
+   ".section--concrete2 h2 { color: var(--red) }" rule further up --
+   the "white -> gold on dark, all-red on light" two-tone heading
+   system). That reads fine on a heading describing Augzet's own work,
+   but this specific h2 states a negative fact ("what usually goes
+   wrong ... never written down"), and red on a negative sentence reads
+   as an alarm/warning rather than a design accent -- that's what was
+   throwing the section off, not the paragraph copy underneath it
+   (client confirmed the copy itself is fine and wants it kept).
+   Scoped to just this one heading; every other h2 sitewide keeps the
+   red as-is.
+   2026-09-13, same session: colour alone wasn't the whole problem --
+   at the sitewide h2 clamp (1.8-2.85rem) this still reads as a big
+   attention-grabbing headline making a negative statement, just in a
+   quieter colour. Sized down to .lede-adjacent scale and dropped the
+   bold heading weight so it sits as a lead-in line to the paragraph
+   underneath, not a banner over it. Still a real heading (kept the h2
+   tag for document structure), just no longer shouting visually. */
+#the-gap h2 {
+  color: var(--charcoal-2);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.4;
+}
 
 /* ---------- Sticky flagship ---------- */
 .flagship-grid {
@@ -1270,19 +1410,34 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 .section--dark .field select option { background: var(--charcoal); color: var(--white); }
 .form-note { font-size: 13px; color: var(--gray-500); margin-top: 10px; }
 .form-success {
+  /* De-shouted 2026-09-13: was uppercase at 0.14em tracking, the one
+     surviving remnant of the pre-redesign all-caps voice -- matched to
+     the rest of the site's sentence-case system now that this panel's
+     copy actually gets typed in sentence case too. */
   padding: 2rem;
   border-left: 3px solid var(--gold);
   background: rgba(240,148,29,0.06);
-  font-family: var(--font-label);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  line-height: 2;
-  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.7;
+  /* This panel lives inside .section--dark (contact.html) -- #C9C4C2 is
+     the same light-on-dark body colour already used for .lede--dark
+     (main.css:192), not the near-black --charcoal-2 the light-section
+     version of this fix would need. */
+  color: #C9C4C2;
   display: none;
 }
 .form-success.is-visible { display: block; }
+/* Error state, added 2026-09-13 alongside the real Web3Forms wiring --
+   the old mailto handler could never fail (it just opened a mail
+   client), a real network POST can. Same panel, red instead of gold. */
+.form-success.is-error {
+  border-left-color: var(--red);
+  background: rgba(205,10,27,0.06);
+}
 
 /* ---------- Footer (Quanta: raised charcoal, semibold link columns) ---------- */
 .site-footer {
@@ -1376,6 +1531,12 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   body { padding-bottom: 78px; }
   /* The overlay menu is fixed at a higher z-index; keep the bar out of it. */
   .mobile-menu.is-open ~ .action-bar { display: none; }
+  /* Hero was centering its content in the full 100svh, so the bottom of
+     the block (proof line, scroll cue) sat directly behind the fixed
+     78px action bar instead of in the actually-visible viewport above
+     it — the block read as cramped because part of it was hidden, not
+     because the spacing values themselves were tight. */
+  .hero { min-height: calc(100svh - 78px); }
 }
 
 /* Screen-reader-only, for the projects filter live region. */
@@ -1434,29 +1595,43 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
    Was a full section: chip, heading, then four cells at 63px each with
    3.6rem of padding — roughly a screen and a half for four numbers. Now
    one inline strip, no heading, no chip. */
-.stats-band--compact { padding-block: clamp(2.2rem, 4vw, 3rem); }
+.stats-band--compact { padding-block: clamp(2.2rem, 4vw, 3.2rem); }
 .stats-band--compact .stats-grid {
-  border: none;
-  background: none;
-  gap: clamp(1.5rem, 4vw, 3rem);
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
-  /* .stats-grid is a sibling of .container by design (the full-bleed band
-     with internal dividers), so it carries no outer padding of its own —
-     the base .stat-cell's clamp(2.2rem,4vw,3.6rem) padding was the ONLY
-     thing keeping the first and last cells off the screen edge. Zeroing
-     that cell padding below for the compact variant removed it, so
-     "186+ Projects Delivered" and the last cell ran flush to the viewport
-     edge. Restored here at the grid level instead of per-cell, since gap
-     already handles the spacing between cells. */
-  padding-inline: var(--container-pad);
+  gap: clamp(1.25rem, 2vw, 2rem);
+  width: 100%;
 }
-.stats-band--compact .stat-cell { background: none; padding: 0; }
-.stats-band--compact .stat-num { font-size: clamp(1.7rem, 2.6vw, 2.5rem); }
-.stats-band--compact .stat-label { margin-top: 6px; font-size: 11px; letter-spacing: 0.16em; }
-@media (max-width: 720px) {
-  .stats-band--compact .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.6rem 1rem; }
-  .stats-band--compact .stat-cell { min-height: 0; display: block; }
-  .stats-band--compact .stat-num { font-size: clamp(1.6rem, 8vw, 2.1rem); }
+.stats-band--compact .stat-cell {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.stats-band--compact .stat-num {
+  font-size: clamp(1.7rem, 2.6vw, 2.5rem);
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  width: 100%;
+}
+.stats-band--compact .stat-label {
+  margin-top: 8px;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-align: center;
+  width: 100%;
+}
+@media (max-width: 860px) {
+  .stats-band--compact .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .stats-band--compact .stat-cell { padding: 1.25rem 1rem; }
+  .stats-band--compact .stat-num { font-size: clamp(1.6rem, 7vw, 2.1rem); }
 }
 
 /* ---------- Founders strip ----------
@@ -1489,11 +1664,21 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   margin-bottom: clamp(1.5rem, 2.4vw, 2rem);
 }
 .founder-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(1.75rem, 4.2vw, 3.75rem);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  width: 100%;
 }
-.founder-row li { display: flex; align-items: center; gap: 18px; }
+.founder-row li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
 .founder-row img {
   width: 72px; height: 72px;
   border-radius: 50%;
@@ -1505,18 +1690,15 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   display: flex;
   flex-direction: column;
   line-height: 1.45;
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--gray-600);
-  /* The full quals run long ("Holder of Kerala State Electricity
-     Licensing Board Supervisor License") — cap the line so it wraps to
-     two short lines under the name rather than stretching the row. */
-  max-width: 30ch;
+  max-width: none;
 }
-.founder-row b { font-size: 16.5px; color: var(--charcoal); font-weight: 700; margin-bottom: 1px; }
-@media (max-width: 720px) {
-  .founder-row { flex-direction: column; gap: 1.3rem; }
-  .founder-row img { width: 58px; height: 58px; }
-  .founder-row span { max-width: none; }
+.founder-row b { font-size: 16.5px; color: var(--charcoal); font-weight: 700; margin-bottom: 3px; }
+@media (max-width: 960px) {
+  .founder-row { grid-template-columns: 1fr; gap: 1rem; }
+  .founder-row li { padding: 1rem 1.25rem; }
+  .founder-row img { width: 60px; height: 60px; }
 }
 
 /* ---------- Scrolling reviews ----------
@@ -1629,7 +1811,13 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
   /* Same reason the section vrule is hidden here: at this width the rule
      sits inside the container padding and collides with the breadcrumb. */
   .page-hero .vrule-inline, .page-hero > .page-hero-rule { display: none; }
-  h1, .h1 { letter-spacing: 0.07em; }
+  /* REMOVED 2026-09-13: leftover from the pre-redesign all-caps heading
+     system. .page-hero h1 sets no letter-spacing of its own, so this
+     silently reintroduced the old wide tracking on every interior page's
+     hero (about, contact, projects, services, all 4 services/* pages) on
+     mobile only -- the homepage was accidentally protected because
+     .hero-content h1's higher specificity overrode it. The sitewide
+     tight tracking is already set once, correctly, at line 137. */
 }
 
 /* ---------- Reduced motion ---------- */

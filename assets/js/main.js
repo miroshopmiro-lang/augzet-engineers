@@ -406,56 +406,80 @@
   }
 
   /* ---------- Quote form ----------
-     This used to call preventDefault(), hide the form and reveal a panel
-     reading "RECEIVED. AN ENGINEER REVIEWS EVERY REQUEST." — while the
-     <form> had no action and carried `novalidate`, so a completely empty
-     submission produced that same confirmation and nothing was sent
-     anywhere. The site was issuing a false receipt: the prospect waited a
-     business day, heard nothing, and concluded Augzet was unprofessional.
+     HISTORY: this used to call preventDefault(), hide the form and
+     reveal a panel reading "RECEIVED. AN ENGINEER REVIEWS EVERY
+     REQUEST." — while the <form> had no action and carried
+     `novalidate`, so a completely empty submission produced that same
+     confirmation and nothing was sent anywhere. The site was issuing a
+     false receipt: the prospect waited a business day, heard nothing,
+     and concluded Augzet was unprofessional.
 
-     Until a real endpoint is wired (deferred by the client, 2026-08-07),
-     the form composes the enquiry into a mail draft to the address the
-     site already publishes. It is not as good as a POST to a CRM, but it
-     delivers, and it never claims to have delivered when it hasn't.
+     From 2026-08-07 to 2026-09-13 this composed the enquiry into a
+     mailto: draft instead — not as good as a real submission, but it
+     delivered, and it never claimed success without the visitor
+     actually pressing send in their own mail app.
 
-     TO GO LIVE: replace the body of this handler with a fetch() POST to
-     the endpoint, and only then show a confirmation. Do not restore a
-     confirmation that fires without a successful response. */
+     WIRED LIVE 2026-09-13: now does a real fetch() POST to Web3Forms
+     (see contact.html for the access_key/subject/from_name hidden
+     inputs and the botcheck honeypot). Same rule as before still
+     applies: never show the success panel without an actual successful
+     response, and now that a real network request can fail, show a
+     distinct error state instead of silently doing nothing. */
   function initForm() {
     var form = document.querySelector(".quote-form");
     if (!form) return;
+    var status = document.querySelector(".form-success");
+    var submitBtn = form.querySelector('button[type="submit"]');
+
+    var showStatus = function (isError, message) {
+      if (!status) return;
+      status.innerHTML = message;
+      status.classList.toggle("is-error", isError);
+      status.classList.add("is-visible");
+      status.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
 
-      var get = function (name) {
-        var el = form.elements[name];
-        return el && el.value ? el.value.trim() : "";
-      };
-
-      var lines = [
-        ["Name", get("name")],
-        ["Phone", get("phone")],
-        ["Email", get("email")],
-        ["Location", get("location")],
-        ["Project type", get("type")],
-        ["Monthly bill", get("bill")],
-        ["Details", get("message")]
-      ].filter(function (pair) { return pair[1]; })
-       .map(function (pair) { return pair[0] + ": " + pair[1]; });
-
-      var subject = "Quote request" + (get("type") ? " — " + get("type") : "");
-      var href = "mailto:info@augzet.com"
-        + "?subject=" + encodeURIComponent(subject)
-        + "&body=" + encodeURIComponent(lines.join("\n"));
-
-      var status = document.querySelector(".form-success");
-      if (status) {
-        status.classList.add("is-visible");
-        status.scrollIntoView({ behavior: "smooth", block: "center" });
+      var submitLabel = submitBtn ? submitBtn.innerHTML : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
       }
-      window.location.href = href;
+
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      })
+        .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+        .then(function (result) {
+          if (result.ok && result.data && result.data.success) {
+            showStatus(false, "Thanks — your enquiry has been sent. An engineer will review it and call you back within one business day.<br>In a hurry? Call <a href=\"tel:04842684066\">0484-2684066</a>.");
+            form.reset();
+            /* Conversion events for ad platforms, added alongside Meta
+               Pixel/GA4 in the <head> of every page (2026-09-13). Guarded
+               with typeof checks since those scripts still have
+               placeholder IDs until real ones are pasted in -- fbq/gtag
+               won't exist (or won't send anywhere real) until then, and
+               this must never throw and break the success state either way. */
+            if (typeof fbq === "function") fbq("track", "Lead");
+            if (typeof gtag === "function") gtag("event", "generate_lead");
+          } else {
+            showStatus(true, "That didn't go through — please try again, or call <a href=\"tel:04842684066\">0484-2684066</a> directly.");
+          }
+        })
+        .catch(function () {
+          showStatus(true, "That didn't go through — please check your connection and try again, or call <a href=\"tel:04842684066\">0484-2684066</a> directly.");
+        })
+        .finally(function () {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = submitLabel;
+          }
+        });
     });
   }
 })();

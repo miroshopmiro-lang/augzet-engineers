@@ -45,6 +45,37 @@
   ]
 }
 </script>
+<!-- Analytics + ad tracking, added 2026-09-13. IDs are PLACEHOLDERS --
+     replace PASTE-META-PIXEL-ID-HERE and PASTE-GA4-MEASUREMENT-ID-HERE
+     with the real Pixel ID (Events Manager) and GA4 Measurement ID
+     (Admin > Data Streams) before this does anything. Fires a PageView /
+     page_view automatically on every page; the quote form additionally
+     fires a Lead / generate_lead event on successful submission (see
+     assets/js/main.js, initForm()). Disclosed in privacy-policy.html. -->
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'PASTE-META-PIXEL-ID-HERE');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PASTE-META-PIXEL-ID-HERE&ev=PageView&noscript=1" /></noscript>
+<!-- End Meta Pixel Code -->
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=PASTE-GA4-MEASUREMENT-ID-HERE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'PASTE-GA4-MEASUREMENT-ID-HERE');
+</script>
 </head>
 <body>
 
@@ -190,16 +221,16 @@
         <div class="footer-social">
           <a href="https://www.linkedin.com/company/augzetengineers" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.2 8h4.6v14.8H.2V8zm7.6 0h4.4v2h.06c.61-1.16 2.1-2.38 4.34-2.38 4.64 0 5.5 3.06 5.5 7.04v8.14h-4.6v-7.22c0-1.72-.03-3.94-2.4-3.94-2.4 0-2.77 1.87-2.77 3.8v7.36H7.8V8z"/></svg></a>
           <a href="https://www.facebook.com/augzetengineers/" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M13.5 22v-9h3l.5-3.5h-3.5V7.2c0-1 .3-1.7 1.8-1.7H17V2.2c-.3 0-1.4-.2-2.7-.2-2.7 0-4.5 1.6-4.5 4.7v2.8H7V13h2.8v9h3.7z"/></svg></a>
-          <a href="https://instagram.com/augzet_engineers" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2z"/></svg></a>
+          <a href="https://instagram.com/augzet_engineers" aria-label="Instagram"><svg viewBox="0 0 16 16"><path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.198-.509.333-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 8 0zm0 1.44c2.136 0 2.39.01 3.233.048.78.036 1.203.166 1.485.276.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.276 1.485.038.843.047 1.096.047 3.232s-.009 2.39-.047 3.233c-.036.78-.166 1.203-.276 1.485a2.478 2.478 0 0 1-.599.92c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.599 2.478 2.478 0 0 1-.598-.92c-.11-.281-.24-.705-.276-1.485-.038-.843-.047-1.096-.047-3.232s.009-2.39.047-3.233c.036-.78.166-1.203.276-1.485.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.281-.11.705-.24 1.485-.276.843-.038 1.096-.047 3.232-.047zm0 2.452a4.108 4.108 0 1 0 0 8.216 4.108 4.108 0 0 0 0-8.216zm0 6.775a2.667 2.667 0 1 1 0-5.334 2.667 2.667 0 0 1 0 5.334zm5.23-6.937a.96.96 0 1 1-1.92 0 .96.96 0 0 1 1.92 0z"/></svg></a>
           <a href="https://www.youtube.com/channel/UCnHPUZILsMGSsXfe8xYKa7w" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></a>
         </div>
       </div>
       <div class="footer-col">
         <h4>Capabilities</h4>
         <ul>
-          <li><a href="/services/electrical-design.html">Electrical System Design</a></li>
-          <li><a href="/services/home-automation.html">Home Automation</a></li>
+          <li><a href="/services/electrical-design.html">Electrical System Designing &amp; Contracting</a></li>
           <li><a href="/services/solar-power.html">Solar Power Projects</a></li>
+          <li><a href="/services/home-automation.html">Home Automation</a></li>
           <li><a href="/services/testing-maintenance.html">Testing &amp; Maintenance</a></li>
         </ul>
       </div>

@@ -1,6 +1,6 @@
 # Augzet Engineers — Website
 
-A multipage marketing site for **Augzet Engineers** — a team of electrical engineers, consultants and contractors in Ernakulam, Kerala. Built on the visual chassis of quantaservices.com: cinematic dark-dignity hero, scribed capability grid, mono-type engineering metadata, and a single loud conversion color.
+A multipage marketing site for **Augzet Engineers** — a team of electrical engineers, consultants and contractors in Ernakulam, Kerala. Design system: cinematic dark-dignity hero, scribed capability grid, mono-type engineering metadata, and a single loud conversion color.
 
 **Positioning:** the core is electrical. Capabilities are ordered Electrical System Design → Home Automation → Solar Power → Testing & Maintenance, matching the order on the client's own live site (augzet.com). Solar is one of four capabilities, not the headline.
 
@@ -30,20 +30,20 @@ Then open http://localhost:4173
 
 - Static HTML + one CSS file (`assets/css/main.css`, design tokens in `:root`) + one JS file (`assets/js/main.js`)
 - GSAP 3.12 + ScrollTrigger (self-hosted in `assets/js/vendor/`) — hero timeline, scroll reveals, counters, sticky case-study beats, marquee
-- Google Fonts: Bebas Neue (display — stands in for Quanta's Alternate Gothic Extra Condensed) · Oswald (tracked labels/nav) · Montserrat (body — stands in for Proxima Nova)
+- Google Fonts: Oxygen (display/label) · Lato (body) — matches augzet.com's live theme stack
 - No build step. Deploy the folder to any static host (root-relative asset paths — serve from the domain root).
 
-## Design tokens (verified against quantaservices.com CSS)
+## Design tokens
 
-| Token | Hex | Quanta source | Role |
-|---|---|---|---|
-| `--charcoal` | `#221F1F` | `--gray-1000` | Primary dark ground (warm) |
-| `--charcoal-2` | `#1A1717` | `--gray-800` | Deep panels, topo texture base |
-| `--light` | `#F4F4F4` | `--gray-100` | Light sections (diagonal hatch) |
-| `--red` | `#CD0A1B` | `--red-300` | Chips on light, arrow boxes, red headlines |
-| `--gold` | `#F0941D` | `--gold-300` | Chips on dark, headline splits, bar CTAs |
+| Token | Hex | Role |
+|---|---|---|
+| `--charcoal` | `#221F1F` | Primary dark ground (warm) |
+| `--charcoal-2` | `#1A1717` | Deep panels, topo texture base |
+| `--light` | `#F4F4F4` | Light sections (diagonal hatch) |
+| `--red` | `#CD0A1B` | Chips on light, arrow boxes, red headlines |
+| `--gold` | `#F0941D` | Chips on dark, headline splits, bar CTAs |
 
-Signature devices (all from Quanta's homepage): filled chip eyebrows, two-tone stacked condensed headlines with 0.1em tracking, red square arrow-box links, textured gold bar buttons, topographic contour overlays on dark, diagonal hatch on light, vertical accent rules, red left-border story cards, centered topo pre-footer CTA band.
+Signature devices: filled chip eyebrows, two-tone stacked condensed headlines with 0.1em tracking, red square arrow-box links, textured gold bar buttons, topographic contour overlays on dark, diagonal hatch on light, vertical accent rules, red left-border story cards, centered topo pre-footer CTA band.
 
 ## Content sources
 
