@@ -369,7 +369,7 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
+  z-index: 130;
   height: var(--header-h);
   display: flex;
   align-items: center;
@@ -442,6 +442,7 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 }
 .main-nav a:hover::after, .main-nav a.is-active::after { transform: scaleX(1); transform-origin: left; }
 .header-cta { flex: none; }
+.site-header.is-menu-open .header-cta { display: none; }
 .header-cta .btn { padding: 11px 20px; font-size: 13px; }
 
 .nav-toggle {

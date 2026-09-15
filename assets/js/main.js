@@ -75,11 +75,13 @@
     var setMenu = function (open) {
       mobileMenu.classList.toggle("is-open", open);
       toggle.classList.toggle("is-open", open);
+      if (header) header.classList.toggle("is-menu-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Menu");
       document.body.style.overflow = open ? "hidden" : "";
-      // Hide the rest of the page from assistive tech while the overlay is up.
+      // Hide the rest of the page from assistive tech while the overlay is up (keep mobileMenu & header active)
       [].forEach.call(document.body.children, function (el) {
-        if (el === mobileMenu || el.contains(mobileMenu) || el.tagName === "SCRIPT") return;
+        if (el === mobileMenu || el.contains(mobileMenu) || el === header || el.contains(header) || el.tagName === "SCRIPT") return;
         if (open) { el.setAttribute("aria-hidden", "true"); el.setAttribute("inert", ""); }
         else { el.removeAttribute("aria-hidden"); el.removeAttribute("inert"); }
       });
@@ -99,12 +101,16 @@
       a.addEventListener("click", function () { setMenu(false); });
     });
 
+    mobileMenu.addEventListener("click", function (e) {
+      if (e.target === mobileMenu) { setMenu(false); }
+    });
+
     document.addEventListener("keydown", function (e) {
       if (!mobileMenu.classList.contains("is-open")) return;
       if (e.key === "Escape") { setMenu(false); return; }
       if (e.key !== "Tab") return;
-      // Trap: cycle focus inside the overlay.
-      var items = mobileMenu.querySelectorAll("a, button");
+      // Trap: cycle focus inside the overlay and toggle button.
+      var items = [toggle].concat([].slice.call(mobileMenu.querySelectorAll("a, button")));
       if (!items.length) return;
       var first = items[0], last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
