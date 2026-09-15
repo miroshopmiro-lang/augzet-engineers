@@ -67,7 +67,7 @@
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
 body {
   font-family: var(--font-body);
   font-size: 16px;
@@ -2172,8 +2172,8 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
 .gap-cred-cell p { color: #C9C4C2; font-size: 15px; max-width: var(--measure); }
 
 @media (max-width: 860px) {
-  .gap-strip { grid-template-columns: 1fr; }
-  .gap-tile { aspect-ratio: 16 / 10; }
+  .gap-strip { grid-template-columns: minmax(0, 1fr); }
+  .gap-tile { aspect-ratio: 16 / 10; height: auto; }
   .gap-proof { grid-template-columns: 1fr; }
   .gap-proof-media { aspect-ratio: 4 / 3; }
 }
