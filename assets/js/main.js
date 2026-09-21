@@ -44,6 +44,21 @@
     if (!heroVideo) {
       hideLoader();
     } else {
+      /* The poster <img> paints first; the video is attached only after the
+         page has loaded, and skipped on Save-Data / reduced motion. */
+      var startVideo = function () {
+        var conn = navigator.connection || {};
+        var skip = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || "") ||
+          (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+        var src = heroVideo.getAttribute("data-src");
+        if (skip || !src) { hideLoader(); return; }
+        heroVideo.src = src;
+        heroVideo.addEventListener("playing", function () { heroVideo.classList.add("is-playing"); }, { once: true });
+        var p = heroVideo.play();
+        if (p && p.catch) p.catch(hideLoader);
+      };
+      if (document.readyState === "complete") startVideo();
+      else window.addEventListener("load", startVideo, { once: true });
       // HAVE_FUTURE_DATA or better means it can actually start.
       if (heroVideo.readyState >= 3 && !heroVideo.paused) hideLoader();
       ["playing", "canplaythrough"].forEach(function (evt) {
