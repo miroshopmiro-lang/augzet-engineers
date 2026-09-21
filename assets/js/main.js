@@ -57,8 +57,9 @@
         var p = heroVideo.play();
         if (p && p.catch) p.catch(hideLoader);
       };
-      if (document.readyState === "complete") startVideo();
-      else window.addEventListener("load", startVideo, { once: true });
+      var startLater = function () { window.setTimeout(startVideo, 2500); };
+      if (document.readyState === "complete") startLater();
+      else window.addEventListener("load", startLater, { once: true });
       // HAVE_FUTURE_DATA or better means it can actually start.
       if (heroVideo.readyState >= 3 && !heroVideo.paused) hideLoader();
       ["playing", "canplaythrough"].forEach(function (evt) {
@@ -503,4 +504,16 @@
         });
     });
   }
+})();
+
+/* Lazy map embed: the Google Maps iframe pulls ~600 KB of scripts, so its src
+   is only set once the frame is near the viewport. */
+(function () {
+  var f = document.querySelector("iframe[data-src]");
+  if (!f) return;
+  var load = function () { if (f.dataset.src) { f.src = f.dataset.src; f.removeAttribute("data-src"); } };
+  if (!("IntersectionObserver" in window)) { load(); return; }
+  new IntersectionObserver(function (e, o) {
+    if (e[0].isIntersecting) { load(); o.disconnect(); }
+  }, { rootMargin: "400px" }).observe(f);
 })();
