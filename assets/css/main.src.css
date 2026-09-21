@@ -75,7 +75,7 @@ body {
   color: var(--gray-600);
   background: var(--light);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip; /* not hidden: html already clips, and hidden here makes body a scroll container that breaks position:sticky */
 }
 img, svg, video { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
