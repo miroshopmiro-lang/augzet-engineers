@@ -106,7 +106,7 @@
 }
 </script>
 <!-- Analytics + ad tracking, added 2026-09-13. IDs are PLACEHOLDERS --
-     replace 991779476655763 and PASTE-GA4-MEASUREMENT-ID-HERE
+     replace 991779476655763 and G-5LKD1CCEQN
      with the real Pixel ID (Events Manager) and GA4 Measurement ID
      (Admin > Data Streams) before this does anything. Fires a PageView /
      page_view automatically on every page; the quote form additionally
@@ -117,10 +117,10 @@
 /* Analytics: queue calls now, fetch the vendor scripts after first interaction
    or 3.5s after load, so they never compete with first paint. */
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
-gtag('js',new Date());gtag('config','PASTE-GA4-MEASUREMENT-ID-HERE');
+gtag('js',new Date());gtag('config','G-5LKD1CCEQN');
 !function(f,n){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
 fbq('init','991779476655763');fbq('track','PageView');
-(function(){var d=0;function go(){if(d)return;d=1;['https://connect.facebook.net/en_US/fbevents.js','https://www.googletagmanager.com/gtag/js?id=PASTE-GA4-MEASUREMENT-ID-HERE'].forEach(function(u){var s=document.createElement('script');s.async=true;s.src=u;document.head.appendChild(s)})}
+(function(){var d=0;function go(){if(d)return;d=1;['https://connect.facebook.net/en_US/fbevents.js','https://www.googletagmanager.com/gtag/js?id=G-5LKD1CCEQN'].forEach(function(u){var s=document.createElement('script');s.async=true;s.src=u;document.head.appendChild(s)})}
 ['pointerdown','keydown','scroll','touchstart'].forEach(function(e){addEventListener(e,go,{once:true,passive:true})});
 addEventListener('load',function(){setTimeout(go,3500)})})();
 </script>
