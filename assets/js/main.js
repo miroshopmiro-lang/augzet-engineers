@@ -147,6 +147,13 @@
       el.style.opacity = "1";
       el.style.transform = "none";
     });
+    // Hero heading/sub/ctas/proof/scroll-cue start hidden in CSS (see
+    // main.css) so the timeline below never has to yank visible text
+    // down and fade it out. This branch skips that timeline, so it has
+    // to do the reveal itself instead.
+    document.querySelectorAll(".hero-content h1, .hero-sub, .hero-ctas > *, .hero-proof, .scroll-cue").forEach(function (el) {
+      el.style.opacity = "1";
+    });
     document.querySelectorAll("[data-count]").forEach(function (el) {
       el.textContent = Number(el.getAttribute("data-count")).toLocaleString("en-IN");
     });
@@ -159,12 +166,18 @@
   /* ---------- Hero intro timeline ---------- */
   var heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
   if (document.querySelector(".hero")) {
+    /* .fromTo(), not .from(): these elements start hidden via CSS (see
+       main.css) so the page never paints them fully visible before this
+       runs. .from() reads the CURRENT rendered value as its implicit "to"
+       -- with opacity already 0 in CSS, that read back 0 as both ends and
+       the fade silently did nothing (y still animated, opacity never did).
+       Explicit to-values sidestep that read entirely. */
     heroTl
-      .from(".hero h1", { y: 56, opacity: 0, duration: 1.0, delay: 0.2 })
-      .from(".hero-sub", { y: 26, opacity: 0, duration: 0.8 }, "-=0.55")
-      .from(".hero-ctas > *", { y: 24, opacity: 0, duration: 0.6, stagger: 0.12 }, "-=0.45")
-      .from(".hero-proof", { y: 18, opacity: 0, duration: 0.6 }, "-=0.35")
-      .from(".scroll-cue", { opacity: 0, duration: 0.8 }, "-=0.3");
+      .fromTo(".hero h1", { y: 56, opacity: 0 }, { y: 0, opacity: 1, duration: 1.0, delay: 0.2 })
+      .fromTo(".hero-sub", { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, "-=0.55")
+      .fromTo(".hero-ctas > *", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.12 }, "-=0.45")
+      .fromTo(".hero-proof", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, "-=0.35")
+      .fromTo(".scroll-cue", { opacity: 0 }, { opacity: 1, duration: 0.8 }, "-=0.3");
 
     /* Hero handoff: content fades up as next section arrives */
     gsap.to(".hero-content", {
