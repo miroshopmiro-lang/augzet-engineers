@@ -579,19 +579,6 @@ h3, .h3 { font-size: clamp(1.2rem, 1.65vw, 1.6rem); letter-spacing: 0; line-heig
    sitting above a full-size section heading; tightened here for the
    hero specifically, to match the calmer overall scale below. */
 .hero-content .chip { margin-bottom: 1.1rem; }
-/* Hero heading/sub/ctas/proof/scroll-cue start hidden so the very first
-   paint already matches GSAP's pre-animation state. Without this, the
-   HTML renders fully visible before the deferred GSAP bundle loads, then
-   the hero timeline yanks it down and fades it out the instant GSAP runs
-   -- a visible flash-then-jump that reads as the page stuttering. If GSAP
-   never runs (reduced motion, or the bundle fails to load), main.js's
-   fallback branch sets these back to opacity:1. */
-.hero-content h1,
-.hero-sub,
-.hero-ctas > *,
-.hero-proof,
-.scroll-cue { opacity: 0; }
-
 .hero-content h1 {
   /* The homepage hero is the one place on the site that earns the largest
      type: full-bleed video behind it, three short hard-broken lines, no
