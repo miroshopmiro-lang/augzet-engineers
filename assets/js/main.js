@@ -37,6 +37,7 @@
     var hideLoader = function () {
       if (!heroLoader || heroLoader.classList.contains("is-hidden")) return;
       heroLoader.classList.add("is-hidden");
+      heroLoader.classList.remove("is-visible");
       window.setTimeout(function () {
         heroLoader.parentNode && heroLoader.parentNode.removeChild(heroLoader);
       }, 600);
@@ -49,6 +50,10 @@
       var startVideo = function () {
         var src = heroVideo.getAttribute("data-src");
         if (!src) { hideLoader(); return; }
+        // Spinner appears only after the 2.5s delay if video is still buffering
+        if (heroLoader && !heroLoader.classList.contains("is-hidden")) {
+          heroLoader.classList.add("is-visible");
+        }
         heroVideo.src = src;
         heroVideo.addEventListener("playing", function () { heroVideo.classList.add("is-playing"); }, { once: true });
         var p = heroVideo.play();
