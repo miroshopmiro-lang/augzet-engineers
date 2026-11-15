@@ -1,0 +1,17 @@
+# Augzet Engineers
+
+> Licensed electrical engineers, solar energy consultants, and home automation contractors in Ernakulam and Kochi, Kerala.
+
+## Core Capabilities
+- [Electrical System Design](https://augzet.com/services/electrical-design): Comprehensive HT/LT design, panel schedules, load calculations, and KSEB scheme approvals.
+- [Rooftop Solar Power](https://augzet.com/services/solar-power): On-grid, off-grid and hybrid solar installations with KSEB net metering and PM Surya Ghar subsidy handling.
+- [Home Automation](https://augzet.com/services/home-automation): Smart lighting, climate control, and IoT integration for homes, villas, and commercial properties.
+- [Testing & Maintenance](https://augzet.com/services/testing-maintenance): Electrical safety testing, insulation resistance certification, and AMC packages.
+
+## Projects & Background
+- [Projects Portfolio](https://augzet.com/projects): 300+ delivered electrical and solar projects across Kerala.
+- [About Augzet](https://augzet.com/about): Engineering leadership, founding engineers, and licensing credentials.
+- [Request a Free Quote](https://augzet.com/contact): Simulation-backed engineering proposals and project consultation.
+
+## Contact Information
+- [Contact Page](https://augzet.com/contact): Royal Way Building, Muttom, Ernakulam, Kerala.
