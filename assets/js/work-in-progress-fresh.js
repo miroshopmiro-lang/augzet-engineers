@@ -1,0 +1,560 @@
+/* ============================================================
+   AUGZET ENGINEERS — interaction layer
+   GSAP + ScrollTrigger · restraint is the aesthetic
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGsap = typeof window.gsap !== "undefined";
+  var hasScrollTrigger = typeof window.ScrollTrigger !== "undefined";
+
+  if (hasGsap && typeof window.ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+    /* Trigger positions are measured at script time, before images and
+       fonts settle — photos further down the page then shift every
+       trigger's real position (~600px measured), so reveals/counters can
+       fire at the wrong scroll offset or never. Re-measure once the page
+       is fully loaded. */
+    window.addEventListener("load", function () {
+      ScrollTrigger.refresh();
+    });
+  }
+
+  /* Keep the poster underneath video and recover playback on re-entry.
+     Video failure must never hide the headline or leave a frozen overlay. */
+  var heroLoader = document.querySelector("[data-hero-loader]");
+  var heroVideo = document.querySelector(".hero-video");
+  var hideLoader = function () {
+    if (!heroLoader) return;
+    heroLoader.classList.add("is-hidden");
+    heroLoader.classList.remove("is-visible");
+  };
+  if (heroVideo) {
+    var videoStarted = false;
+    var heroInView = true;
+    var bufferingTimer;
+    var usePoster = function () {
+      heroVideo.classList.remove("is-playing");
+      hideLoader();
+    };
+    var showVideo = function () {
+      if (!heroVideo.paused && heroVideo.readyState >= 2) {
+        window.clearTimeout(bufferingTimer);
+        heroVideo.classList.add("is-playing");
+        hideLoader();
+      }
+    };
+    var mobileViewport = window.matchMedia("(max-width: 720px) and (max-aspect-ratio: 3/4)");
+    var resumeVideo = function () {
+      if (!videoStarted || document.hidden || !heroInView) return;
+      var mobileSrc = heroVideo.getAttribute("data-mobile-src");
+      var useMobile = mobileViewport.matches && mobileSrc;
+      var src = useMobile ? mobileSrc : heroVideo.getAttribute("data-src");
+      if (!src) { usePoster(); return; }
+
+      if (heroVideo.getAttribute("src") !== src) {
+        window.clearTimeout(bufferingTimer);
+        heroVideo.classList.remove("is-playing");
+        heroVideo.setAttribute("data-hero-format", useMobile ? "portrait" : mobileSrc ? "landscape" : "any");
+        heroVideo.src = src;
+      } else if (heroVideo.error) {
+        return;
+      }
+
+      try {
+        var promise = heroVideo.play();
+        if (promise && promise.then) promise.then(showVideo).catch(function () {
+          if (heroVideo.getAttribute("src") === src) usePoster();
+        });
+      } catch (error) { usePoster(); }
+    };
+    if (mobileViewport.addEventListener) mobileViewport.addEventListener("change", resumeVideo);
+    else mobileViewport.addListener(resumeVideo);
+    heroVideo.addEventListener("playing", showVideo);
+    heroVideo.addEventListener("timeupdate", showVideo);
+    heroVideo.addEventListener("pause", usePoster);
+    heroVideo.addEventListener("error", usePoster);
+    ["waiting", "stalled"].forEach(function (eventName) {
+      heroVideo.addEventListener(eventName, function () {
+        window.clearTimeout(bufferingTimer);
+        bufferingTimer = window.setTimeout(function () {
+          usePoster();
+          resumeVideo();
+        }, 3000);
+      });
+    });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) resumeVideo();
+    });
+    window.addEventListener("pageshow", resumeVideo);
+    if ("IntersectionObserver" in window) {
+      var heroObserver = new IntersectionObserver(function (entries) {
+        heroInView = entries[0].isIntersecting;
+        if (heroInView) resumeVideo();
+      });
+      heroObserver.observe(heroVideo.closest(".hero") || heroVideo);
+    }
+    var startVideo = function () {
+      videoStarted = true;
+      heroVideo.muted = true;
+      if (heroLoader && !heroLoader.classList.contains("is-hidden")) {
+        heroLoader.classList.add("is-visible");
+      }
+      resumeVideo();
+    };
+    var startLater = function () { window.setTimeout(startVideo, 2500); };
+    if (document.readyState === "complete") startLater();
+    else window.addEventListener("load", startLater, { once: true });
+    window.setTimeout(hideLoader, 12000);
+  } else {
+    hideLoader();
+  }
+
+  /* ---------- Header scroll state ---------- */
+  var header = document.querySelector(".site-header");
+  function onScroll() {
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 80);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- Mobile menu ---------- */
+  /* The overlay covers the page but the page stays in the tab order behind
+     it, so before this a keyboard user opening the menu tabbed straight
+     into invisible content, Escape did nothing, and focus never returned
+     to the toggle. Below 1024px this IS the primary navigation, so it was
+     effectively keyboard-inaccessible on the site's main breakpoint. */
+  var toggle = document.querySelector(".nav-toggle");
+  var mobileMenu = document.querySelector(".mobile-menu");
+  if (toggle && mobileMenu) {
+    var setMenu = function (open) {
+      mobileMenu.classList.toggle("is-open", open);
+      toggle.classList.toggle("is-open", open);
+      if (header) header.classList.toggle("is-menu-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Menu");
+      document.body.style.overflow = open ? "hidden" : "";
+      // Hide the rest of the page from assistive tech while the overlay is up (keep mobileMenu & header active)
+      [].forEach.call(document.body.children, function (el) {
+        if (el === mobileMenu || el.contains(mobileMenu) || el === header || el.contains(header) || el.tagName === "SCRIPT") return;
+        if (open) { el.setAttribute("aria-hidden", "true"); el.setAttribute("inert", ""); }
+        else { el.removeAttribute("aria-hidden"); el.removeAttribute("inert"); }
+      });
+      if (open) {
+        var first = mobileMenu.querySelector("a, button");
+        first && first.focus();
+      } else {
+        toggle.focus();
+      }
+    };
+
+    toggle.addEventListener("click", function () {
+      setMenu(!mobileMenu.classList.contains("is-open"));
+    });
+
+    mobileMenu.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () { setMenu(false); });
+    });
+
+    mobileMenu.addEventListener("click", function (e) {
+      if (e.target === mobileMenu) { setMenu(false); }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (!mobileMenu.classList.contains("is-open")) return;
+      if (e.key === "Escape") { setMenu(false); return; }
+      if (e.key !== "Tab") return;
+      // Trap: cycle focus inside the overlay and toggle button.
+      var items = [toggle].concat([].slice.call(mobileMenu.querySelectorAll("a, button")));
+      if (!items.length) return;
+      var first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+
+  /* ---------- Stagger delay for mobile menu links ---------- */
+  if (mobileMenu) {
+    mobileMenu.querySelectorAll("nav a").forEach(function (a, i) {
+      a.style.transitionDelay = 0.06 * i + "s";
+    });
+  }
+
+  if (reduceMotion || !hasGsap || !hasScrollTrigger) {
+    // Show everything immediately, still run counters instantly
+    document.querySelectorAll("[data-reveal]").forEach(function (el) {
+      el.style.opacity = "1";
+      el.style.transform = "none";
+    });
+    document.querySelectorAll("[data-count]").forEach(function (el) {
+      el.textContent = Number(el.getAttribute("data-count")).toLocaleString("en-IN");
+    });
+    initBeats(true);
+    initFilters();
+    initForm();
+    return;
+  }
+
+  /* ---------- Hero intro timeline ---------- */
+  var heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  if (document.querySelector(".hero")) {
+    heroTl
+      .from(".hero h1", { y: 56, opacity: 0, duration: 1.0, delay: 0.2 })
+      .from(".hero-sub", { y: 26, opacity: 0, duration: 0.8 }, "-=0.55")
+      .from(".hero-ctas > *", { y: 24, opacity: 0, duration: 0.6, stagger: 0.12 }, "-=0.45")
+      .from(".hero-proof", { y: 18, opacity: 0, duration: 0.6 }, "-=0.35")
+      .from(".scroll-cue", { opacity: 0, duration: 0.8 }, "-=0.3");
+
+    /* Hero handoff: content fades up as next section arrives */
+    gsap.to(".hero-content", {
+      y: -50,
+      opacity: 0,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "40% top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+    /* Subtle scene parallax */
+    gsap.to(".hero-scene", {
+      yPercent: 14,
+      ease: "none",
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }
+    });
+  }
+
+  /* ---------- Section reveals ---------- */
+  document.querySelectorAll("[data-reveal]").forEach(function (el) {
+    gsap.to(el, {
+      opacity: 1,
+      y: 0,
+      duration: 0.9,
+      ease: "power3.out",
+      delay: parseFloat(el.getAttribute("data-reveal-delay") || 0),
+      scrollTrigger: { trigger: el, start: "top 84%", once: true }
+    });
+  });
+
+  /* Grid cell stagger */
+  document.querySelectorAll("[data-reveal-group]").forEach(function (group) {
+    if (group.classList.contains("proj-grid")) {
+      document.addEventListener("projectsRendered", function () {
+        var items = group.children;
+        gsap.from(items, {
+          opacity: 0,
+          y: 32,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.08,
+          scrollTrigger: { trigger: group, start: "top 82%", once: true }
+        });
+        if (typeof ScrollTrigger !== "undefined") {
+          ScrollTrigger.refresh();
+        }
+      });
+      return;
+    }
+    var items = group.children;
+    gsap.from(items, {
+      opacity: 0,
+      y: 32,
+      duration: 0.8,
+      ease: "power3.out",
+      stagger: 0.08,
+      scrollTrigger: { trigger: group, start: "top 82%", once: true }
+    });
+  });
+
+  /* ---------- Counters ---------- */
+  document.querySelectorAll("[data-count]").forEach(function (el) {
+    var target = Number(el.getAttribute("data-count"));
+    var obj = { v: 0 };
+    gsap.to(obj, {
+      v: target,
+      duration: 2.2,
+      ease: "power2.out",
+      scrollTrigger: { trigger: el, start: "top 85%", once: true },
+      onUpdate: function () {
+        el.textContent = Math.round(obj.v).toLocaleString("en-IN");
+      }
+    });
+  });
+
+  /* ---------- Marquee ---------- */
+  var track = document.querySelector(".marquee-track");
+  if (track) {
+    var mHalf = track.scrollWidth / 2;
+    gsap.to(track, { x: -mHalf, duration: 28, repeat: -1, ease: "none" });
+  }
+
+  /* ---------- Review rail (Auto-Scroll + Mouse & Touch Drag) ---------- */
+  var railContainer = document.querySelector(".review-rail");
+  var railTrack = document.querySelector(".review-track");
+  if (railContainer && railTrack) {
+    railTrack.innerHTML += railTrack.innerHTML;
+
+    var halfWidth = 0;
+    function updateHalfWidth() {
+      halfWidth = railTrack.scrollWidth / 2;
+    }
+    updateHalfWidth();
+    window.addEventListener("resize", updateHalfWidth);
+
+    var currentX = 0;
+    var autoSpeed = -0.7; // Continuous auto-scroll speed (px/frame)
+    var isDragging = false;
+    var startX = 0;
+    var dragStartX = 0;
+    var velocity = 0;
+    var lastPointerX = 0;
+    var lastPointerTime = 0;
+
+    railContainer.style.cursor = "grab";
+    railContainer.style.userSelect = "none";
+    railContainer.style.webkitUserSelect = "none";
+    railContainer.style.touchAction = "pan-y";
+
+    function wrapX(val) {
+      if (halfWidth <= 0) return val;
+      while (val < -halfWidth) val += halfWidth;
+      while (val > 0) val -= halfWidth;
+      return val;
+    }
+
+    function render() {
+      currentX = wrapX(currentX);
+      railTrack.style.transform = "translate3d(" + currentX + "px, 0, 0)";
+    }
+
+    function tick() {
+      if (!isDragging) {
+        if (Math.abs(velocity) > 0.05) {
+          currentX += velocity;
+          velocity *= 0.94; // Inertia decay
+        } else {
+          currentX += autoSpeed;
+        }
+        render();
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    railContainer.addEventListener("pointerdown", function (e) {
+      isDragging = true;
+      startX = e.clientX;
+      dragStartX = currentX;
+      velocity = 0;
+      lastPointerX = e.clientX;
+      lastPointerTime = performance.now();
+      railContainer.style.cursor = "grabbing";
+      try {
+        railContainer.setPointerCapture(e.pointerId);
+      } catch (err) {}
+    });
+
+    railContainer.addEventListener("pointermove", function (e) {
+      if (!isDragging) return;
+      var delta = e.clientX - startX;
+      currentX = wrapX(dragStartX + delta);
+      render();
+
+      var now = performance.now();
+      var dt = now - lastPointerTime;
+      if (dt > 0) {
+        velocity = (e.clientX - lastPointerX) / dt * 16;
+        lastPointerX = e.clientX;
+        lastPointerTime = now;
+      }
+    });
+
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      railContainer.style.cursor = "grab";
+      try {
+        railContainer.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+    }
+
+    railContainer.addEventListener("pointerup", endDrag);
+    railContainer.addEventListener("pointercancel", endDrag);
+  }
+
+
+  initBeats(false);
+  initFilters();
+  initForm();
+
+  /* ---------- Sticky flagship beats ---------- */
+  function initBeats(instant) {
+    var beats = document.querySelectorAll(".beat");
+    var imgs = document.querySelectorAll(".flagship-media .beat-img");
+    if (!beats.length || !imgs.length) return;
+    if (instant || !hasGsap || typeof ScrollTrigger === "undefined") {
+      imgs[0] && imgs[0].classList.add("is-active");
+      return;
+    }
+    imgs[0].classList.add("is-active");
+    beats.forEach(function (beat, i) {
+      ScrollTrigger.create({
+        trigger: beat,
+        start: "top 55%",
+        end: "bottom 45%",
+        onToggle: function (self) {
+          if (self.isActive) {
+            imgs.forEach(function (img, j) {
+              img.classList.toggle("is-active", i === j);
+            });
+          }
+        }
+      });
+    });
+  }
+
+  /* ---------- Project filters ---------- */
+  function initFilters() {
+    var bar = document.querySelector(".filter-bar");
+    if (!bar) return;
+
+    /* The markup carried role="tablist" on the bar with plain <button>
+       children — no role="tab", no aria-selected, no tabpanel — which
+       announces a tab list containing zero tabs, worse than no role at
+       all. These are filter toggles, not tabs, so the roles are dropped
+       and aria-pressed is used instead. A live region announces the
+       result count, which previously changed silently. */
+    bar.removeAttribute("role");
+    var buttons = bar.querySelectorAll("button");
+    buttons.forEach(function (b) {
+      b.setAttribute("aria-pressed", b.classList.contains("is-active") ? "true" : "false");
+    });
+
+    var live = document.getElementById("filter-status");
+    if (!live) {
+      live = document.createElement("p");
+      live.id = "filter-status";
+      live.className = "visually-hidden";
+      live.setAttribute("role", "status");
+      live.setAttribute("aria-live", "polite");
+      bar.parentNode.insertBefore(live, bar.nextSibling);
+    }
+
+    bar.addEventListener("click", function (e) {
+      var btn = e.target.closest("button");
+      if (!btn) return;
+      buttons.forEach(function (b) {
+        b.classList.remove("is-active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-pressed", "true");
+      var f = btn.getAttribute("data-filter");
+      var cards = document.querySelectorAll(".proj-card"); // Query dynamically to account for CMS cards
+      var shown = 0;
+      cards.forEach(function (card) {
+        var show = f === "all" || card.getAttribute("data-cat") === f;
+        card.classList.toggle("is-hidden", !show);
+        if (show) shown++;
+      });
+      live.textContent = shown + (shown === 1 ? " project" : " projects") + " shown for " + btn.textContent.trim() + ".";
+      if (hasGsap) {
+        gsap.from(".proj-card:not(.is-hidden)", { opacity: 0, y: 20, duration: 0.5, stagger: 0.05, ease: "power2.out" });
+      }
+      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+    });
+  }
+
+  /* ---------- Quote form ----------
+     HISTORY: this used to call preventDefault(), hide the form and
+     reveal a panel reading "RECEIVED. AN ENGINEER REVIEWS EVERY
+     REQUEST." — while the <form> had no action and carried
+     `novalidate`, so a completely empty submission produced that same
+     confirmation and nothing was sent anywhere. The site was issuing a
+     false receipt: the prospect waited a business day, heard nothing,
+     and concluded Augzet was unprofessional.
+
+     From 2026-08-07 to 2026-09-13 this composed the enquiry into a
+     mailto: draft instead — not as good as a real submission, but it
+     delivered, and it never claimed success without the visitor
+     actually pressing send in their own mail app.
+
+     WIRED LIVE 2026-09-13: now does a real fetch() POST to Web3Forms
+     (see contact.html for the access_key/subject/from_name hidden
+     inputs and the botcheck honeypot). Same rule as before still
+     applies: never show the success panel without an actual successful
+     response, and now that a real network request can fail, show a
+     distinct error state instead of silently doing nothing. */
+  function initForm() {
+    var form = document.querySelector(".quote-form");
+    if (!form) return;
+    var status = document.querySelector(".form-success");
+    var submitBtn = form.querySelector('button[type="submit"]');
+
+    var showStatus = function (isError, message) {
+      if (!status) return;
+      status.innerHTML = message;
+      status.classList.toggle("is-error", isError);
+      status.classList.add("is-visible");
+      status.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      var submitLabel = submitBtn ? submitBtn.innerHTML : "";
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
+      }
+
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      })
+        .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+        .then(function (result) {
+          if (result.ok && result.data && result.data.success) {
+            showStatus(false, "Thanks — your enquiry has been sent. An engineer will review it and call you back within one business day.<br>In a hurry? Call <a href=\"tel:04842684066\">0484-2684066</a>.");
+            form.reset();
+            /* Conversion events for ad platforms, added alongside Meta
+               Pixel/GA4 in the <head> of every page (2026-09-13). Guarded
+               with typeof checks since those scripts still have
+               placeholder IDs until real ones are pasted in -- fbq/gtag
+               won't exist (or won't send anywhere real) until then, and
+               this must never throw and break the success state either way. */
+            if (typeof fbq === "function") fbq("track", "Lead");
+            if (typeof gtag === "function") gtag("event", "generate_lead");
+          } else {
+            showStatus(true, "That didn't go through — please try again, or call <a href=\"tel:04842684066\">0484-2684066</a> directly.");
+          }
+        })
+        .catch(function () {
+          showStatus(true, "That didn't go through — please check your connection and try again, or call <a href=\"tel:04842684066\">0484-2684066</a> directly.");
+        })
+        .finally(function () {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = submitLabel;
+          }
+        });
+    });
+  }
+})();
+
+/* Lazy map embed: the Google Maps iframe pulls ~600 KB of scripts, so its src
+   is only set once the frame is near the viewport. */
+(function () {
+  var f = document.querySelector("iframe[data-src]");
+  if (!f) return;
+  var load = function () { if (f.dataset.src) { f.src = f.dataset.src; f.removeAttribute("data-src"); } };
+  if (!("IntersectionObserver" in window)) { load(); return; }
+  new IntersectionObserver(function (e, o) {
+    if (e[0].isIntersecting) { load(); o.disconnect(); }
+  }, { rootMargin: "400px" }).observe(f);
+})();

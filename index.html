@@ -21,7 +21,7 @@
 <meta name="twitter:description" content="Electrical engineers, consultants and contractors in Ernakulam, Kerala. Electrical design, home automation, solar power and maintenance. 300+ projects.">
 <meta name="twitter:image" content="https://augzet.com/assets/img/og-card.webp">
 <link rel="preload" href="/assets/fonts/lato-400.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/oxygen-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/work-in-progress-fresh.css">
 <link rel="icon" type="image/png" href="/assets/img/favicon.png">
 <script type="application/ld+json">
 {
@@ -200,8 +200,8 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
 
          preload="metadata" so the poster image carries first paint and
          the video streams in behind it rather than blocking it. -->
-    <img src="/assets/img/hero-poster.webp" alt="" width="1200" height="675" fetchpriority="high" decoding="async" class="hero-poster">
-    <video muted loop playsinline preload="none" class="hero-video" data-src="/assets/video/hero-2.mp4"></video>
+    <picture><source media="(max-width: 720px) and (max-aspect-ratio: 3/4)" srcset="/assets/img/hero-mobile-five-shots-720p.webp"><img src="/assets/img/hero-poster.webp" alt="" width="1200" height="675" fetchpriority="high" decoding="async" class="hero-poster"></picture>
+    <video muted loop playsinline preload="none" class="hero-video" data-src="/assets/video/hero-2.mp4" data-mobile-src="/assets/video/hero-mobile-five-shots-720p.mp4"></video>
   </div>
   <!-- Buffering indicator for slow connections. The poster already covers
        the first paint, so this is not "the hero is blank" — it signals
@@ -273,9 +273,9 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
          line be short. Same underlying claims as revision 4 -- nothing
          new asserted. -->
     <span class="chip" data-reveal>Licensed Electrical Engineers · Ernakulam</span>
-    <h1>Get A Fully <span class="accent">Documented</span> Electrical And Solar System.</h1>
+    <h1>Your electrical and solar systems.<br><span class="accent">Designed. Documented.</span></h1>
     <p class="hero-guarantee" data-reveal>Serviced by the same engineers who built it.</p>
-    <p class="hero-sub">Electrical design, solar power, home automation and maintenance in Ernakulam. Load studies and drawings before installation, quoted up front with no hidden charges.</p>
+    <p class="hero-sub">Electrical design, solar, automation and maintenance in Ernakulam. Drawings provided at handover.</p>
     <div class="hero-ctas">
       <a href="/contact" class="btn-bar btn-bar--red"><span class="bar-label">Get a Free Quote</span><span class="arrow-box">→</span></a>
       <a href="tel:04842684066" class="btn-bar"><span class="bar-label">Call 0484-2684066</span><span class="arrow-box">→</span></a>
@@ -303,48 +303,20 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
 </div>
 
 <!-- ================= CAPABILITIES (Quanta pattern) ================= -->
-<!-- NEW 2026-08-19 — conversion pass, not yet approved by client.
-     Names the buyer's actual situation before the capability list.
-     Nothing here is invented: the split-trade framing is the client's
-     own July 2026 correction ("one of our services is solar, the core
-     is electrical"), restated from the buyer's side instead of the
-     company's.
-
-     [LAYOUT FIX 2026-08-19] Original version wrapped this copy alone in
-     .section-head (max-width 880px) inside a 1440px .container with no
-     sibling content — left ~560px of dead space on desktop. Restructured
-     into the existing .case-row/.case-media/.case-text component (same
-     one about.html's founder spotlight uses, main.css:934) instead of
-     inventing new layout. join-meter-panel.webp already exists in the
-     asset library for exactly this idea — the physical point where a
-     building's electrical panel and a solar system connect.
-
-     [CONFIRM] Headline/eyebrow copy below is still pending validation —
-     see G:\Agency\research\augzet-copy-validation\SYNTHESIS.md once
-     research lands. This edit only fixes layout, not copy. -->
-<section class="section section--concrete2" id="the-gap">
-  <div class="container">
-    <div class="case-row case-row--flip">
-      <div class="case-media">
-        <img src="/assets/img/photos/join-meter-panel.webp" alt="The point where a building's electrical panel and solar system connect." width="900" height="1124" loading="lazy" decoding="async">
-      </div>
-      <div class="case-text" data-reveal>
-        <!-- 2026-09-13: dropped the .t-gold span on "never written down".
-             On .section--concrete2 that class resolves to --red (see
-             main.css:180), so the negative phrase in this heading was
-             rendering in red, on top of already being the largest,
-             highest-contrast type in the block -- effectively an alarm
-             flag pointed at the one sentence that needed it least.
-             Client feedback: the paragraph copy underneath is fine and
-             genuinely useful, the red emphasis on the negative line is
-             what read as fear-mongering. Left the heading itself alone,
-             just made it one uniform colour like every other h2 -- no
-             sizing change, no separate re-write of the copy. -->
-        <span class="chip" data-reveal>What Usually Goes Wrong</span>
-        <h2 data-reveal>Most electrical problems start with no drawings.</h2>
-        <p class="lede" data-reveal>A verbal estimate, no drawings, no itemised scope. Then the bill moves, the work is hard to check, and the person who did it is difficult to reach once they have been paid. When a fault turns up two years later, there is no record of how anything was wired.</p>
-        <p class="lede" data-reveal>Augzet works the other way round. Load studies and single-line diagrams are drawn and shared before anything is installed, the quote is itemised up front, and the same licensed engineers who designed the system come back to service it under an AMC.</p>
-      </div>
+<section id="the-gap" class="engineering-intro" aria-labelledby="engineering-intro-heading">
+  <div class="container engineering-intro-grid">
+    <div>
+      <h2 class="eyebrow" id="engineering-intro-heading">About Augzet</h2>
+      <p class="engineering-intro-copy">We are a team of proficient and skilled engineers in the field of Renewable power (or green energy) blended by members with years of experience and knowledge, with a passion to build sustainable and green technologies.</p>
+    </div>
+    <div class="engineering-intro-details">
+      <a class="engineering-intro-project" href="/projects" aria-label="Explore projects: 10 kW roof-integrated solar in Kothamangalam">
+        <figure>
+          <img src="/assets/img/photos/atum-roof-integrated-10kw-1000.webp" srcset="/assets/img/photos/atum-roof-integrated-10kw-1000-preview-480.webp 480w, /assets/img/photos/atum-roof-integrated-10kw-1000-preview-800.webp 800w, /assets/img/photos/atum-roof-integrated-10kw-1000.webp 1000w" sizes="auto, (max-width: 720px) calc(100vw - 2 * clamp(20px, 4vw, 64px)), (max-width: 1440px) 40vw, 580px" alt="Aerial view of solar panels integrated into a home's roof" width="1000" height="563" loading="lazy" decoding="async">
+          <figcaption>10 kW roof-integrated solar · Kothamangalam <span aria-hidden="true">→</span></figcaption>
+        </figure>
+      </a>
+      <a class="btn" href="/about">More about Augzet <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -359,10 +331,10 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
       <a class="btn-bar" href="/contact" data-reveal><span class="bar-label">Get a Free Quote</span><span class="arrow-box">→</span></a>
     </div>
     <div class="cap2-right" data-reveal-group>
-      <a class="cap2-item" href="/services/electrical-design"><span class="cap2-idx">01</span><span class="cap2-media"><img src="/assets/img/photos/electrical-panel-db-1000.webp" alt="" width="1000" height="1333" loading="lazy" decoding="async"></span><span>Electrical System Designing &amp; Contracting</span><span class="cap2-desc">Load studies, 2D layouts, single-line diagrams and installation done to those drawings.</span></a>
-      <a class="cap2-item" href="/services/solar-power"><span class="cap2-idx">02</span><span class="cap2-media"><img src="/assets/img/photos/commercial-rooftop-array-1000.webp" alt="" width="1000" height="563" loading="lazy" decoding="async"></span><span>Solar Power Projects</span><span class="cap2-desc">Simulation-backed rooftop and ground-mount plants, grid sync and MNRE subsidy handled.</span></a>
-      <a class="cap2-item" href="/services/home-automation"><span class="cap2-idx">03</span><span class="cap2-media"><img src="/assets/img/photos/villa-night-lit-1000.webp" alt="" width="1000" height="750" loading="lazy" decoding="async"></span><span>Home Automation</span><span class="cap2-desc">IoT control of lighting, climate and loads, planned into the wiring from the start.</span></a>
-      <a class="cap2-item" href="/services/testing-maintenance"><span class="cap2-idx">04</span><span class="cap2-media"><img src="/assets/img/photos/site-engineer-drawing-wide.webp" alt="" width="1200" height="630" loading="lazy" decoding="async"></span><span>Testing &amp; Maintenance</span><span class="cap2-desc">AMC plans across electrical, solar and automation, from the engineers who built it.</span></a>
+      <a class="cap2-item" href="/services/electrical-design"><span class="cap2-idx">01</span><span class="cap2-media"><img src="/assets/img/photos/electrical-panel-graded-1000.webp" srcset="/assets/img/photos/electrical-panel-graded-640.webp 640w, /assets/img/photos/electrical-panel-graded-1000.webp 1000w" sizes="auto, (max-width: 720px) 92vw, (max-width: 1440px) 44vw, 640px" alt="" width="1000" height="438" loading="lazy" decoding="async"></span><span>Electrical System Designing &amp; Contracting</span><span class="cap2-desc">Load studies, 2D layouts, single-line diagrams and installation done to those drawings.</span></a>
+      <a class="cap2-item" href="/services/solar-power"><span class="cap2-idx">02</span><span class="cap2-media"><img src="/assets/img/photos/commercial-rooftop-array-1000-preview-900.webp" alt="" width="900" height="506" loading="lazy" decoding="async"></span><span>Solar Power Projects</span><span class="cap2-desc">Simulation-backed rooftop and ground-mount plants, grid sync and MNRE subsidy handled.</span></a>
+      <a class="cap2-item" href="/services/home-automation"><span class="cap2-idx">03</span><span class="cap2-media"><img src="/assets/img/photos/villa-night-lit-1000-preview-900.webp" alt="" width="900" height="675" loading="lazy" decoding="async"></span><span>Home Automation</span><span class="cap2-desc">IoT control of lighting, climate and loads, planned into the wiring from the start.</span></a>
+      <a class="cap2-item" href="/services/testing-maintenance"><span class="cap2-idx">04</span><span class="cap2-media"><img src="/assets/img/photos/site-engineer-drawing-wide-preview-960.webp" alt="" width="960" height="504" loading="lazy" decoding="async"></span><span>Testing &amp; Maintenance</span><span class="cap2-desc">AMC plans across electrical, solar and automation, from the engineers who built it.</span></a>
     </div>
   </div>
 </section>
@@ -416,11 +388,14 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
 
     <div class="gap-strip">
       <figure class="gap-tile">
-        <img src="/assets/img/photos/inverter-internals-clean.webp" alt="The internals of a solar inverter: the point where a generation system is tied into a building's existing electrical installation." width="850" height="963" loading="lazy" decoding="async">
+        <picture class="electrical-dusk-picture">
+          <source media="(max-width: 860px)" srcset="/assets/img/photos/electrical-reference-dusk-mobile-640.webp 640w, /assets/img/photos/electrical-reference-dusk-mobile-960.webp 960w" sizes="auto, 92vw">
+          <img src="/assets/img/photos/electrical-reference-dusk-wide-1200.webp" srcset="/assets/img/photos/electrical-reference-dusk-wide-720.webp 720w, /assets/img/photos/electrical-reference-dusk-wide-1200.webp 1200w" sizes="auto, (max-width: 1440px) 44vw, 640px" alt="Illustration of an engineer using a laptop beside a transmission tower at dusk." width="1200" height="500" loading="lazy" decoding="async">
+        </picture>
         <figcaption>Electrical</figcaption>
       </figure>
       <figure class="gap-tile">
-        <img src="/assets/img/photos/commercial-rooftop-array-1000.webp" alt="A commercial rooftop solar array commissioned by Augzet Engineers." width="1000" height="563" loading="lazy" decoding="async">
+        <img src="/assets/img/photos/commercial-rooftop-array-1000-preview-900.webp" alt="A commercial rooftop solar array commissioned by Augzet Engineers." width="900" height="506" loading="lazy" decoding="async">
         <figcaption>Solar</figcaption>
       </figure>
     </div>
@@ -536,15 +511,15 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
     <h2 id="founders-head">Founded by three electrical engineers</h2>
     <ul class="founder-row">
       <li>
-        <img src="/assets/img/photos/febin-thomas.webp" alt="Febin Thomas" width="72" height="72" loading="lazy" decoding="async">
+        <img src="/assets/img/photos/febin-thomas-preview-192.webp" alt="Febin Thomas" width="192" height="204" loading="lazy" decoding="async">
         <span><b>Febin Thomas</b>B.Tech in Electrical and Electronics, Holder of Kerala State Electricity Licensing Board Supervisor License</span>
       </li>
       <li>
-        <img src="/assets/img/photos/jibin-cj.webp" alt="Jibin C J" width="72" height="72" loading="lazy" decoding="async">
+        <img src="/assets/img/photos/jibin-cj-preview-192.webp" alt="Jibin C J" width="192" height="203" loading="lazy" decoding="async">
         <span><b>Jibin C J</b>B.Tech in Electrical and Electronics, Diploma in Electrical and Electronics</span>
       </li>
       <li>
-        <img src="/assets/img/photos/amal-dhileep-kumar.webp" alt="Amal Dhileep Kumar" width="72" height="72" loading="lazy" decoding="async">
+        <img src="/assets/img/photos/amal-dhileep-kumar-preview-192.webp" alt="Amal Dhileep Kumar" width="192" height="209" loading="lazy" decoding="async">
         <span><b>Amal Dhileep Kumar</b>B.Tech in Electrical and Electronics</span>
       </li>
     </ul>
@@ -649,7 +624,7 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
   <div class="container">
     <div class="case-row">
       <div class="case-media">
-        <img src="/assets/img/photos/solar-villa-community-100kwp-1000.webp" alt="Kerala's first fully solar powered villa community, 100 kWp, Kakkanad, Kochi" width="1000" height="750" loading="lazy" decoding="async">
+        <img src="/assets/img/photos/solar-villa-community-100kwp-1000.webp" srcset="/assets/img/photos/solar-villa-community-100kwp-1000-preview-600.webp 600w, /assets/img/photos/solar-villa-community-100kwp-1000-preview-800.webp 800w, /assets/img/photos/solar-villa-community-100kwp-1000.webp 1000w" sizes="auto, (max-width: 720px) 92vw, (max-width: 1440px) 52vw, 740px" alt="Kerala's first fully solar powered villa community, 100 kWp, Kakkanad, Kochi" width="1000" height="750" loading="lazy" decoding="async">
       </div>
       <div class="case-text" data-reveal data-reveal-delay="0.1">
         <span class="chip" data-reveal>From Our Delivery Record</span>
@@ -758,6 +733,6 @@ addEventListener('load',function(){setTimeout(go,3500)})})();
 
 <script defer src="/assets/js/vendor/gsap.min.js"></script>
 <script defer src="/assets/js/vendor/ScrollTrigger.min.js"></script>
-<script defer src="/assets/js/main.js"></script>
+<script defer src="/assets/js/work-in-progress-fresh.js"></script>
 </body>
 </html>
